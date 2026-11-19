@@ -6,11 +6,11 @@
 <title>AETHERIUM WT-8 // Polyphonic Wavetable Synthesizer by slitex3K</title>
 <style>
   :root {
-    --bg-chassis: #0f1115;
-    --bg-panel: #161920;
-    --bg-screen: #080a0d;
-    --border-light: rgba(255, 255, 255, 0.08);
-    --border-dark: rgba(0, 0, 0, 0.85);
+    --bg-chassis: #0b0d12;
+    --bg-panel: #13161e;
+    --bg-screen: #06080b;
+    --border-light: rgba(255, 255, 255, 0.09);
+    --border-dark: rgba(0, 0, 0, 0.9);
     --cyan: #00f0ff;
     --plasma: #ff3b30;
     --amber: #ffaa00;
@@ -31,7 +31,7 @@
   }
 
   body {
-    background: radial-gradient(circle at 50% 20%, #1d222c 0%, #090a0d 100%);
+    background: radial-gradient(circle at 50% 15%, #1c2333 0%, #050608 100%);
     color: var(--text-main);
     font-family: var(--font-ui);
     min-height: 100vh;
@@ -42,24 +42,27 @@
     overflow-x: auto;
   }
 
-  /* Main VST Chassis */
+  /* Main VST Chassis with reactive audio aura */
   .synth-chassis {
-    width: 1320px;
-    min-width: 1320px;
+    width: 1340px;
+    min-width: 1340px;
     background:
+      radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.06) 0%, transparent 55%),
       repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px),
-      linear-gradient(180deg, #1b1f27 0%, #12151b 100%);
+      linear-gradient(180deg, #181c26 0%, #0e1117 100%);
     border-radius: 14px;
-    border: 1px solid #2d3340;
+    border: 1px solid #303848;
     box-shadow:
-      0 30px 70px rgba(0, 0, 0, 0.85),
-      inset 0 1px 1px rgba(255, 255, 255, 0.15),
-      inset 0 -2px 5px rgba(0, 0, 0, 0.8);
+      0 35px 80px rgba(0, 0, 0, 0.92),
+      0 0 30px rgba(0, 240, 255, 0.08),
+      inset 0 1px 1px rgba(255, 255, 255, 0.16),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.85);
     padding: 14px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     position: relative;
+    transition: box-shadow 0.08s ease-out;
   }
 
   /* Top Header Bar */
@@ -67,9 +70,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(180deg, #1d212b 0%, #13161d 100%);
+    background: linear-gradient(180deg, #1c212c 0%, #10131a 100%);
     border: 1px solid var(--border-dark);
-    box-shadow: inset 0 1px 0 var(--border-light), 0 4px 10px rgba(0,0,0,0.4);
+    box-shadow: inset 0 1px 0 var(--border-light), 0 4px 12px rgba(0,0,0,0.5);
     border-radius: 8px;
     padding: 6px 12px;
     height: 58px;
@@ -84,24 +87,25 @@
   }
 
   .brand-logo {
-    width: 30px;
-    height: 30px;
-    border-radius: 5px;
-    background: radial-gradient(circle at 30% 30%, var(--cyan), #0066ff);
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.5), inset 0 1px 2px #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: conic-gradient(from 135deg, var(--cyan), #0066ff, var(--purple), var(--cyan));
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.55), inset 0 1px 2px #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 900;
     color: #05070a;
     font-size: 13px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
   }
 
   .brand-title {
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 1.4px;
-    background: linear-gradient(90deg, #ffffff, #94a3b8);
+    font-size: 15.5px;
+    font-weight: 900;
+    letter-spacing: 1.6px;
+    background: linear-gradient(90deg, #ffffff, #7dd3fc, #c084fc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -110,7 +114,7 @@
     font-size: 9px;
     color: var(--cyan);
     font-family: var(--font-mono);
-    letter-spacing: 0.8px;
+    letter-spacing: 0.9px;
     text-transform: uppercase;
   }
 
@@ -122,7 +126,7 @@
     padding: 4px 7px;
     border-radius: 6px;
     border: 1px solid #282e3b;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.95);
   }
 
   .preset-btn {
@@ -139,8 +143,8 @@
     transition: all 0.1s;
   }
 
-  .preset-btn:hover { border-color: var(--cyan); color: var(--cyan); }
-  .preset-btn.amber:hover { border-color: var(--amber); color: var(--amber); }
+  .preset-btn:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 8px rgba(0,240,255,0.25); }
+  .preset-btn.amber:hover { border-color: var(--amber); color: var(--amber); box-shadow: 0 0 8px rgba(255,170,0,0.25); }
 
   select.vst-select {
     background: #0d1015;
@@ -161,7 +165,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    background: #0b0d11;
+    background: #090b0f;
     border: 1px solid #222733;
     padding: 3px 7px;
     border-radius: 20px;
@@ -175,11 +179,10 @@
     height: 7px;
     border-radius: 50%;
     background: #333;
-    transition: all 0.15s;
+    transition: all 0.12s;
   }
   .led.active-cyan { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
-  .led.active-green { background: var(--green); box-shadow: 0 0 8px var(--green); }
-  .led.active-amber { background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+  .led.active-plasma { background: var(--plasma); box-shadow: 0 0 8px var(--plasma); }
 
   /* Top Right Visualizer & Master Area */
   .top-right-control {
@@ -193,12 +196,12 @@
     border: 1px solid #262c3a;
     border-radius: 5px;
     padding: 2px;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.95);
     cursor: pointer;
   }
 
   canvas.mini-scope {
-    width: 130px;
+    width: 132px;
     height: 38px;
     display: block;
     border-radius: 3px;
@@ -208,7 +211,7 @@
   .nav-tabs {
     display: flex;
     gap: 6px;
-    background: #11141b;
+    background: #0e1118;
     padding: 4px;
     border-radius: 6px;
     border: 1px solid #222836;
@@ -216,7 +219,7 @@
 
   .nav-tab-btn {
     flex: 1;
-    background: #171c26;
+    background: #161b26;
     border: 1px solid #282f3e;
     color: var(--text-muted);
     font-size: 11px;
@@ -230,10 +233,10 @@
 
   .nav-tab-btn:hover { color: var(--text-main); border-color: #3b455b; }
   .nav-tab-btn.active {
-    background: linear-gradient(180deg, #252e3e, #181f2b);
+    background: linear-gradient(180deg, #252e40, #161d29);
     border-color: var(--cyan);
     color: var(--cyan);
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+    box-shadow: 0 0 14px rgba(0, 240, 255, 0.25);
   }
 
   /* View Containers */
@@ -242,12 +245,12 @@
 
   /* Recessed Panel Styling */
   .panel {
-    background: linear-gradient(180deg, #181c24 0%, #12151c 100%);
+    background: linear-gradient(180deg, #171b24 0%, #10131a 100%);
     border-radius: 8px;
-    border: 1px solid #090b0e;
+    border: 1px solid #080a0d;
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.07),
-      0 3px 8px rgba(0, 0, 0, 0.45);
+      0 4px 10px rgba(0, 0, 0, 0.5);
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -286,22 +289,27 @@
   .power-toggle.on {
     background: var(--cyan);
     border-color: #80f8ff;
-    box-shadow: 0 0 7px var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
   }
   .power-toggle.on.plasma {
     background: var(--plasma);
     border-color: #ff8a80;
-    box-shadow: 0 0 7px var(--plasma);
+    box-shadow: 0 0 8px var(--plasma);
   }
   .power-toggle.on.amber {
     background: var(--amber);
     border-color: #ffe082;
-    box-shadow: 0 0 7px var(--amber);
+    box-shadow: 0 0 8px var(--amber);
   }
   .power-toggle.on.purple {
     background: var(--purple);
     border-color: #e0b0ff;
-    box-shadow: 0 0 7px var(--purple);
+    box-shadow: 0 0 8px var(--purple);
+  }
+  .power-toggle.on.green {
+    background: var(--green);
+    border-color: #6ee7b7;
+    box-shadow: 0 0 8px var(--green);
   }
 
   /* Grid Layouts */
@@ -420,7 +428,7 @@
   /* Pill / Toggle Switches */
   .pill-group {
     display: flex;
-    background: #0b0d12;
+    background: #090b0f;
     border-radius: 4px;
     padding: 2px;
     border: 1px solid #242a38;
@@ -431,7 +439,7 @@
     border: none;
     color: var(--text-muted);
     font-size: 9px;
-    font-weight: 700;
+    font-weight: 800;
     padding: 3px 6px;
     border-radius: 3px;
     cursor: pointer;
@@ -460,6 +468,7 @@
     border-color: var(--cyan);
     color: var(--cyan);
     background: rgba(0, 240, 255, 0.12);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.15);
   }
   .route-btn.active.amber {
     border-color: var(--amber);
@@ -509,47 +518,52 @@
     background: var(--bg-screen);
     border-radius: 5px;
     border: 1px solid #242b3a;
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.9);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.95);
     display: block;
     cursor: crosshair;
   }
 
-  /* FX Rack Grid (4x2 = 8 FX Modules) */
+  /* FX Rack Grid (5x2 = 10 FX Modules) */
   .fx-rack-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-
-  .fx-card {
-    background: #101319;
-    border: 1px solid #222836;
-    border-radius: 6px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
   }
 
+  .fx-card {
+    background: #0f1218;
+    border: 1px solid #222836;
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
   .fx-card.highlight-crusher {
-    border-color: rgba(255, 170, 0, 0.35);
+    border-color: rgba(255, 170, 0, 0.38);
     box-shadow: inset 0 0 15px rgba(255, 170, 0, 0.04);
   }
 
   .fx-card.highlight-purple {
-    border-color: rgba(184, 77, 255, 0.35);
+    border-color: rgba(184, 77, 255, 0.38);
     box-shadow: inset 0 0 15px rgba(184, 77, 255, 0.04);
+  }
+
+  .fx-card.highlight-green {
+    border-color: rgba(16, 185, 129, 0.38);
+    box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.04);
   }
 
   .fx-card-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 800;
     color: #cbd5e1;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    padding-bottom: 5px;
+    padding-bottom: 4px;
   }
 
   /* Arp & Chord Memory Grid */
@@ -615,10 +629,10 @@
     background: #11141c;
     border: 1px solid #242c3d;
     border-radius: 8px;
-    padding: 22px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 11px;
     font-size: 13px;
     line-height: 1.55;
     color: #cbd5e1;
@@ -629,11 +643,11 @@
 
   /* Performance Quick Strip + 3-Octave Realistic Keyboard */
   .keyboard-dock {
-    background: linear-gradient(180deg, #0d0f14 0%, #161922 100%);
+    background: linear-gradient(180deg, #0c0e13 0%, #151822 100%);
     border-radius: 8px;
     border: 1px solid #07080b;
     padding: 7px 12px 9px 12px;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.95);
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -651,8 +665,8 @@
   .perf-strip {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: #0a0c10;
+    gap: 7px;
+    background: #090b0f;
     border: 1px solid #1f2533;
     padding: 3px 8px;
     border-radius: 5px;
@@ -681,7 +695,7 @@
   .key-white.active {
     background: linear-gradient(180deg, #bae6fd 0%, #7dd3fc 60%, #38bdf8 100%);
     transform: translateY(2px);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 12px rgba(0, 240, 255, 0.6);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 14px rgba(0, 240, 255, 0.7);
     color: #0f172a;
   }
 
@@ -696,7 +710,7 @@
   .key-black.active {
     background: linear-gradient(180deg, #ff6b6b 0%, #ff3b30 85%, #b91c1c 100%);
     transform: translateY(2px);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 12px rgba(255, 59, 48, 0.7);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 14px rgba(255, 59, 48, 0.8);
     color: #fff;
   }
 
@@ -717,7 +731,7 @@
   <!-- TOP HEADER -->
   <header class="top-bar">
     <div class="brand">
-      <div class="brand-logo">WT8</div>
+      <div class="brand-logo" id="brandLogo">WT8</div>
       <div>
         <div class="brand-title">AETHERIUM WT-8</div>
         <div class="brand-sub">Polyphonic Wavetable Workstation</div>
@@ -734,8 +748,15 @@
     </div>
 
     <div class="top-right-control">
+      <!-- VOICING MODE: POLY / MONO / LEGATO -->
+      <div class="pill-group" id="voicingPills" title="Voicing Mode: POLY (8 voices), MONO (1 voice + retrigger), LEGATO (1 voice + continuous glide)">
+        <button class="pill-btn active" data-voicing="poly">POLY</button>
+        <button class="pill-btn plasma" data-voicing="mono">MONO</button>
+        <button class="pill-btn amber" data-voicing="legato">LEGATO</button>
+      </div>
+
       <!-- CPU OPTIMIZER & OVERSAMPLING -->
-      <div class="status-pill" title="Oversampling Rate & Anti-Aliasing Filter">
+      <div class="status-pill" title="Oversampling Rate & CPU Optimizer">
         <span style="color:var(--amber); font-weight:bold;">OS</span>
         <select class="vst-select" id="oversampleSelect" style="font-size:9.5px; padding:1px 3px; color:var(--amber);">
           <option value="1" selected>1x</option>
@@ -744,9 +765,6 @@
         </select>
         <button class="route-btn" id="cpuEcoBtn" title="CPU Optimizer: caps unison to 3v, lowers control rate & optimizes tails">ECO</button>
       </div>
-
-      <!-- MONO / STEREO TOGGLE -->
-      <button class="route-btn active" id="stereoMonoBtn" title="Toggle Stereo / Mono Master Output" style="padding:4px 7px; font-family:var(--font-mono);">STEREO</button>
 
       <div class="status-pill">
         <span>BPM</span>
@@ -761,7 +779,7 @@
         <span id="midiStatus">MIDI</span>
       </div>
       <div class="mini-scope-box" id="scopeModeBox" title="Click to toggle Scope / FFT">
-        <canvas class="mini-scope" id="topScopeCanvas" width="130" height="38"></canvas>
+        <canvas class="mini-scope" id="topScopeCanvas" width="132" height="38"></canvas>
       </div>
       <div class="knob-unit" data-size="sm" data-param="master.glide" data-min="0" data-max="0.5" data-default="0.0" data-label="GLIDE" data-unit="s"></div>
       <div class="knob-unit" data-size="sm" data-param="master.gain" data-min="0" data-max="1.2" data-default="0.75" data-label="MASTER" data-unit="%"></div>
@@ -773,7 +791,7 @@
   <nav class="nav-tabs">
     <button class="nav-tab-btn active" data-tab="synth">SYNTH / MAIN</button>
     <button class="nav-tab-btn" data-tab="arp">ARP &amp; CHORD MEMORY</button>
-    <button class="nav-tab-btn" data-tab="fx">FX RACK (8 UNITS)</button>
+    <button class="nav-tab-btn" data-tab="fx">FX RACK (10 UNITS)</button>
     <button class="nav-tab-btn" data-tab="matrix">MODULATION MATRIX</button>
     <button class="nav-tab-btn" data-tab="info">INFO / CREDITS</button>
   </nav>
@@ -1027,7 +1045,7 @@
           <div class="knob-unit" data-size="lg" data-color="plasma" data-param="arp.velAccent" data-min="0" data-max="1" data-default="0.25" data-label="ACCENT" data-unit="%"></div>
         </div>
         <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono); background:#090b0f; padding:7px 10px; border-radius:4px; border:1px solid #1e2431;">
-          POLY ENGINE: Riconosce accordi simultanei (finestra 35ms) e li arpeggia nota per nota oppure in blocco ritmico (<b>Poly Chord Pulse</b>). Funziona in cascata anche con <b>Chord Memory</b>!
+          POLY ENGINE: Riconosce accordi simultanei e li arpeggia nota per nota oppure in blocco ritmico (<b>Poly Chord Pulse</b>). Funziona in cascata anche con <b>Chord Memory</b>!
         </div>
       </section>
 
@@ -1068,119 +1086,144 @@
     </div>
   </div>
 
-  <!-- TAB 3: FX RACK (8 MODULES) -->
+  <!-- TAB 3: FX RACK (10 MODULES) -->
   <div class="view-container" id="view-fx">
     <section class="panel">
       <div class="panel-header">
-        <div class="panel-title"><span>MASTER FX RACK CHAIN (8 SERIAL MODULES)</span></div>
-        <span style="font-size:9px; color:var(--text-muted); font-family:var(--font-mono);">HYPER &rarr; PHASER &rarr; CRUSHER &rarr; DIST &rarr; EQ &rarr; WIDENER &rarr; DELAY &rarr; REVERB</span>
+        <div class="panel-title"><span>MASTER FX RACK CHAIN (10 SERIAL MODULES)</span></div>
+        <span style="font-size:9px; color:var(--text-muted); font-family:var(--font-mono);">HYPER &rarr; PHASER &rarr; FLANGER &rarr; CRUSHER &rarr; DIST &rarr; EQ &rarr; WIDENER &rarr; SHIMMER &rarr; DELAY &rarr; REVERB</span>
       </div>
       <div class="fx-rack-grid">
         <!-- 1. HYPER / DIMENSION -->
         <div class="fx-card">
           <div class="fx-card-head">
-            <span>1. HYPER / DIMENSION</span>
+            <span>1. HYPER / DIM</span>
             <div class="power-toggle on" data-toggle="fx.hyper.on"></div>
           </div>
-          <div style="display:flex; justify-content:space-around; padding-top:6px;">
-            <div class="knob-unit" data-param="fx.hyper.detune" data-min="0" data-max="1" data-default="0.35" data-label="DETUNE" data-unit="%"></div>
-            <div class="knob-unit" data-param="fx.hyper.mix" data-min="0" data-max="1" data-default="0.25" data-label="MIX" data-unit="%"></div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-param="fx.hyper.detune" data-min="0" data-max="1" data-default="0.35" data-label="DETUNE" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.hyper.mix" data-min="0" data-max="1" data-default="0.25" data-label="MIX" data-unit="%"></div>
           </div>
         </div>
 
         <!-- 2. STEREO PHASER -->
         <div class="fx-card">
           <div class="fx-card-head">
-            <span>2. STEREO PHASER</span>
+            <span>2. PHASER</span>
             <div class="power-toggle" data-toggle="fx.phaser.on"></div>
           </div>
-          <div style="display:flex; justify-content:space-around; padding-top:6px;">
-            <div class="knob-unit" data-param="fx.phaser.rate" data-min="0.05" data-max="8" data-curve="exp" data-default="0.6" data-label="RATE" data-unit="Hz"></div>
-            <div class="knob-unit" data-param="fx.phaser.fb" data-min="0" data-max="0.85" data-default="0.5" data-label="FEEDBACK" data-unit="%"></div>
-            <div class="knob-unit" data-param="fx.phaser.mix" data-min="0" data-max="1" data-default="0.45" data-label="MIX" data-unit="%"></div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-param="fx.phaser.rate" data-min="0.05" data-max="8" data-curve="exp" data-default="0.6" data-label="RATE" data-unit="Hz"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.phaser.fb" data-min="0" data-max="0.85" data-default="0.5" data-label="FB" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.phaser.mix" data-min="0" data-max="1" data-default="0.45" data-label="MIX" data-unit="%"></div>
           </div>
         </div>
 
-        <!-- 3. ADVANCED BITCRUSHER -->
+        <!-- 3. TAPE FLANGER (NEW) -->
+        <div class="fx-card highlight-green">
+          <div class="fx-card-head">
+            <span style="color:var(--green);">3. TAPE FLANGER</span>
+            <div class="power-toggle green" data-toggle="fx.flanger.on"></div>
+          </div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-param="fx.flanger.rate" data-min="0.05" data-max="5" data-curve="exp" data-default="0.35" data-label="RATE" data-unit="Hz"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.flanger.fb" data-min="-0.85" data-max="0.85" data-default="0.55" data-label="REGEN" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.flanger.mix" data-min="0" data-max="1" data-default="0.4" data-label="MIX" data-unit="%"></div>
+          </div>
+        </div>
+
+        <!-- 4. ADVANCED BITCRUSHER -->
         <div class="fx-card highlight-crusher">
           <div class="fx-card-head">
-            <span style="color:var(--amber);">3. BITCRUSHER</span>
+            <span style="color:var(--amber);">4. BITCRUSHER</span>
             <div class="power-toggle amber" data-toggle="fx.crusher.on"></div>
           </div>
-          <div style="display:flex; justify-content:space-around; padding-top:6px;">
-            <div class="knob-unit" data-color="plasma" data-param="fx.crusher.bits" data-min="2" data-max="16" data-step="1" data-default="8" data-label="BITS" data-unit="bit"></div>
-            <div class="knob-unit" data-color="plasma" data-param="fx.crusher.downsample" data-min="1" data-max="40" data-step="1" data-default="6" data-label="SR RED" data-unit="x"></div>
-            <div class="knob-unit" data-color="plasma" data-param="fx.crusher.jitter" data-min="0" data-max="1" data-default="0.15" data-label="JITTER" data-unit="%"></div>
-            <div class="knob-unit" data-color="plasma" data-param="fx.crusher.mix" data-min="0" data-max="1" data-default="0.65" data-label="MIX" data-unit="%"></div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-color="plasma" data-param="fx.crusher.bits" data-min="2" data-max="16" data-step="1" data-default="8" data-label="BITS" data-unit="bit"></div>
+            <div class="knob-unit" data-size="sm" data-color="plasma" data-param="fx.crusher.downsample" data-min="1" data-max="40" data-step="1" data-default="6" data-label="SR" data-unit="x"></div>
+            <div class="knob-unit" data-size="sm" data-color="plasma" data-param="fx.crusher.jitter" data-min="0" data-max="1" data-default="0.15" data-label="JIT" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-color="plasma" data-param="fx.crusher.mix" data-min="0" data-max="1" data-default="0.65" data-label="MIX" data-unit="%"></div>
           </div>
         </div>
 
-        <!-- 4. ANALOG DISTORTION -->
+        <!-- 5. ANALOG DISTORTION -->
         <div class="fx-card">
           <div class="fx-card-head">
-            <span>4. ANALOG DISTORTION</span>
+            <span>5. DISTORTION</span>
             <div class="power-toggle" data-toggle="fx.dist.on"></div>
           </div>
-          <select class="vst-select" id="fx_dist_mode" style="font-size:10px; padding:2px 4px;">
-            <option value="tube">Tube Warm Saturation</option>
-            <option value="hard">Hard Clip Limiter</option>
-            <option value="diode">Diode Asym Fuzz</option>
-            <option value="foldback">Wavefold Saturator</option>
+          <select class="vst-select" id="fx_dist_mode" style="font-size:9px; padding:1px 3px;">
+            <option value="tube">Tube Warm</option>
+            <option value="hard">Hard Clip</option>
+            <option value="diode">Diode Fuzz</option>
+            <option value="foldback">Wavefold</option>
           </select>
           <div style="display:flex; justify-content:space-around;">
-            <div class="knob-unit" data-color="plasma" data-param="fx.dist.drive" data-min="0" data-max="1" data-default="0.4" data-label="DRIVE" data-unit="%"></div>
-            <div class="knob-unit" data-color="plasma" data-param="fx.dist.mix" data-min="0" data-max="1" data-default="0.5" data-label="MIX" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-color="plasma" data-param="fx.dist.drive" data-min="0" data-max="1" data-default="0.4" data-label="DRIVE" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-color="plasma" data-param="fx.dist.mix" data-min="0" data-max="1" data-default="0.5" data-label="MIX" data-unit="%"></div>
           </div>
         </div>
 
-        <!-- 5. 3-BAND TONE / EQ SCULPTOR (NEW) -->
+        <!-- 6. 3-BAND TONE EQ -->
         <div class="fx-card highlight-purple">
           <div class="fx-card-head">
-            <span style="color:var(--purple);">5. 3-BAND TONE EQ</span>
+            <span style="color:var(--purple);">6. 3-BAND EQ</span>
             <div class="power-toggle purple" data-toggle="fx.eq.on"></div>
           </div>
-          <div style="display:flex; justify-content:space-around; padding-top:6px;">
-            <div class="knob-unit" data-param="fx.eq.low" data-min="-12" data-max="12" data-default="0" data-label="LOW 120Hz" data-unit="dB"></div>
-            <div class="knob-unit" data-param="fx.eq.mid" data-min="-12" data-max="12" data-default="0" data-label="MID 1.2k" data-unit="dB"></div>
-            <div class="knob-unit" data-param="fx.eq.high" data-min="-12" data-max="12" data-default="0" data-label="AIR 6.5k" data-unit="dB"></div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-param="fx.eq.low" data-min="-12" data-max="12" data-default="0" data-label="LOW" data-unit="dB"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.eq.mid" data-min="-12" data-max="12" data-default="0" data-label="MID" data-unit="dB"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.eq.high" data-min="-12" data-max="12" data-default="0" data-label="AIR" data-unit="dB"></div>
           </div>
         </div>
 
-        <!-- 6. STEREO WIDENER / HAAS (NEW) -->
+        <!-- 7. STEREO WIDENER / HAAS -->
         <div class="fx-card highlight-purple">
           <div class="fx-card-head">
-            <span style="color:var(--purple);">6. STEREO WIDENER</span>
+            <span style="color:var(--purple);">7. WIDENER</span>
             <div class="power-toggle purple" data-toggle="fx.widener.on"></div>
           </div>
-          <div style="display:flex; justify-content:space-around; padding-top:6px;">
-            <div class="knob-unit" data-param="fx.widener.width" data-min="0" data-max="2" data-default="1.25" data-label="M/S WIDTH" data-unit="%"></div>
-            <div class="knob-unit" data-param="fx.widener.haas" data-min="0" data-max="1" data-default="0.2" data-label="HAAS DELAY" data-unit="%"></div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-param="fx.widener.width" data-min="0" data-max="2" data-default="1.25" data-label="WIDTH" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.widener.haas" data-min="0" data-max="1" data-default="0.2" data-label="HAAS" data-unit="%"></div>
           </div>
         </div>
 
-        <!-- 7. PING-PONG DELAY -->
+        <!-- 8. OCTAVE SHIMMER ENGINE (NEW) -->
+        <div class="fx-card highlight-green">
+          <div class="fx-card-head">
+            <span style="color:var(--green);">8. OCT SHIMMER</span>
+            <div class="power-toggle green" data-toggle="fx.shimmer.on"></div>
+          </div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-param="fx.shimmer.fb" data-min="0" data-max="0.85" data-default="0.55" data-label="CRYSTAL" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.shimmer.mix" data-min="0" data-max="1" data-default="0.35" data-label="MIX" data-unit="%"></div>
+          </div>
+        </div>
+
+        <!-- 9. PING-PONG DELAY -->
         <div class="fx-card">
           <div class="fx-card-head">
-            <span>7. PING-PONG DELAY</span>
+            <span>9. PP DELAY</span>
             <div class="power-toggle" data-toggle="fx.delay.on"></div>
           </div>
-          <div style="display:flex; justify-content:space-around; padding-top:6px;">
-            <div class="knob-unit" data-param="fx.delay.time" data-min="0.05" data-max="1.0" data-default="0.375" data-label="TIME" data-unit="s"></div>
-            <div class="knob-unit" data-param="fx.delay.fb" data-min="0" data-max="0.88" data-default="0.42" data-label="FEEDBACK" data-unit="%"></div>
-            <div class="knob-unit" data-param="fx.delay.mix" data-min="0" data-max="1" data-default="0.3" data-label="MIX" data-unit="%"></div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-param="fx.delay.time" data-min="0.05" data-max="1.0" data-default="0.375" data-label="TIME" data-unit="s"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.delay.fb" data-min="0" data-max="0.88" data-default="0.42" data-label="FB" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.delay.mix" data-min="0" data-max="1" data-default="0.3" data-label="MIX" data-unit="%"></div>
           </div>
         </div>
 
-        <!-- 8. ALGORITHMIC REVERB -->
+        <!-- 10. ALGORITHMIC REVERB -->
         <div class="fx-card">
           <div class="fx-card-head">
-            <span>8. ALGO REVERB</span>
+            <span>10. REVERB</span>
             <div class="power-toggle on" data-toggle="fx.reverb.on"></div>
           </div>
-          <div style="display:flex; justify-content:space-around; padding-top:6px;">
-            <div class="knob-unit" data-param="fx.reverb.size" data-min="0.1" data-max="1" data-default="0.55" data-label="SIZE" data-unit="%"></div>
-            <div class="knob-unit" data-param="fx.reverb.damp" data-min="500" data-max="14000" data-curve="exp" data-default="5500" data-label="DAMPING" data-unit="Hz"></div>
-            <div class="knob-unit" data-param="fx.reverb.mix" data-min="0" data-max="1" data-default="0.22" data-label="MIX" data-unit="%"></div>
+          <div style="display:flex; justify-content:space-around; padding-top:4px;">
+            <div class="knob-unit" data-size="sm" data-param="fx.reverb.size" data-min="0.1" data-max="1" data-default="0.55" data-label="SIZE" data-unit="%"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.reverb.damp" data-min="500" data-max="14000" data-curve="exp" data-default="5500" data-label="DAMP" data-unit="Hz"></div>
+            <div class="knob-unit" data-size="sm" data-param="fx.reverb.mix" data-min="0" data-max="1" data-default="0.22" data-label="MIX" data-unit="%"></div>
           </div>
         </div>
       </div>
@@ -1210,9 +1253,9 @@
         
         <h3>ARCHITETTURA AUDIO &amp; DSP</h3>
         <ul>
-          <li><b>Motore Wavetable Polifonico a 8 Voci con Oversampling (1x/2x/4x) &amp; CPU Optimizer:</b> Gestione intelligente del voice-stealing, Unison stereo fino a 7 voci, modalità ECO per risparmio CPU, switch Stereo/Mono Master e filtro <b>DC Blocker (Highpass 10Hz)</b> integrato nello stadio finale.</li>
+          <li><b>Voicing POLY / MONO / LEGATO + Oversampling (1x/2x/4x) &amp; CPU Optimizer:</b> Gestione intelligente del voice-stealing polifonico a 8 voci oppure modalità monofonica pura (con <i>Last-Note Priority</i>, <i>Retrigger</i> o <i>Legato Glide</i>), modalità ECO per risparmio CPU e filtro <b>DC Blocker (Highpass 10Hz)</b> integrato nello stadio finale.</li>
           <li><b>Polyphonic Arpeggiator &amp; Chord Memory:</b> Arpeggiatore sincronizzato al BPM con modalità polifoniche e Chord Memory programmabile con funzione <i>Learn</i> in tempo reale.</li>
-          <li><b>Rack FX Seriale a 8 Moduli:</b> Hyper/Dimension Chorus, Stereo Phaser, Advanced Bitcrusher, Analog Distortion, 3-Band Tone EQ, Stereo Widener/Haas, Ping-Pong Delay e Schroeder Algorithmic Reverb.</li>
+          <li><b>Rack FX Seriale a 10 Moduli:</b> Hyper/Dimension Chorus, Stereo Phaser, Tape Flanger, Advanced Bitcrusher, Analog Distortion, 3-Band Tone EQ, Stereo Widener/Haas, Octave Shimmer Engine, Ping-Pong Delay e Schroeder Algorithmic Reverb.</li>
           <li><b>Patch Management JSON:</b> Esportazione e importazione istantanea di preset completi in formato <code>.json</code>.</li>
         </ul>
       </div>
@@ -1253,7 +1296,7 @@ const SynthState = {
   scopeMode: 'both',
   oversampling: 1,
   cpuEco: false,
-  monoMode: false,
+  voicing: 'poly', // 'poly' | 'mono' | 'legato'
 
   arp: {
     on: false,
@@ -1312,10 +1355,12 @@ const SynthState = {
   fx: {
     hyper:   { on: true,  detune: 0.35, mix: 0.25 },
     phaser:  { on: false, rate: 0.6, fb: 0.5, mix: 0.45 },
+    flanger: { on: false, rate: 0.35, fb: 0.55, mix: 0.4 },
     crusher: { on: false, bits: 8, downsample: 6, jitter: 0.15, mix: 0.65 },
     dist:    { on: false, mode: 'tube', drive: 0.4, mix: 0.5 },
     eq:      { on: false, low: 0, mid: 0, high: 0 },
     widener: { on: false, width: 1.25, haas: 0.2 },
+    shimmer: { on: false, fb: 0.55, mix: 0.35 },
     delay:   { on: false, time: 0.375, fb: 0.42, mix: 0.3 },
     reverb:  { on: true,  size: 0.55, damp: 5500, mix: 0.22 }
   },
@@ -1540,7 +1585,7 @@ function sampleWavetable(tableName, wtPos, phase, warpMode, warpAmt, modSignal =
 }
 
 // ----------------------------------------------------------------------------
-// 3. WEB AUDIO POLYPHONIC DSP ENGINE (OVERSAMPLING, CPU ECO, MONO/STEREO, 8 FX)
+// 3. WEB AUDIO POLY/MONO/LEGATO DSP ENGINE (10 SERIAL FX + OVERSAMPLING + ECO)
 // ----------------------------------------------------------------------------
 class AetheriumDSP {
   constructor() {
@@ -1551,6 +1596,7 @@ class AetheriumDSP {
     this.analyser = null;
     this.masterGainNode = null;
     this.lastFreq = 261.63;
+    this.monoNoteStack = []; // Last-note priority stack for MONO / LEGATO
 
     // Anti-aliasing lowpass state for Oversampling decimation
     this.osLpL1 = 0; this.osLpL2 = 0;
@@ -1560,40 +1606,55 @@ class AetheriumDSP {
     this.dcInL = 0; this.dcOutL = 0;
     this.dcInR = 0; this.dcOutR = 0;
 
-    // Hyper / Chorus Buffers
+    // 1. Hyper / Chorus Buffers
     this.chorusDelayL = new Float32Array(4410);
     this.chorusDelayR = new Float32Array(4410);
     this.chorusWriteIdx = 0;
     this.chorusPhase = 0;
 
-    // Stereo Phaser State
+    // 2. Stereo Phaser State
     this.phaserPhase = 0;
     this.phaserApL = new Float32Array(4);
     this.phaserApR = new Float32Array(4);
     this.phaserFbL = 0;
     this.phaserFbR = 0;
 
-    // Advanced Bitcrusher State
+    // 3. Tape Flanger Buffers
+    this.flangerBufL = new Float32Array(2048);
+    this.flangerBufR = new Float32Array(2048);
+    this.flangerIdx = 0;
+    this.flangerPhase = 0;
+
+    // 4. Advanced Bitcrusher State
     this.crushHoldL = 0;
     this.crushHoldR = 0;
     this.crushCounter = 0;
 
-    // 3-Band Tone EQ State
+    // 6. 3-Band Tone EQ State
     this.eqLowL = 0; this.eqLowR = 0;
     this.eqHighL = 0; this.eqHighR = 0;
 
-    // Haas Widener Buffer
+    // 7. Haas Widener Buffer
     this.haasBufR = new Float32Array(2048);
     this.haasIdx = 0;
 
-    // Ping-Pong Delay Buffers
+    // 8. Octave Shimmer Granular Pitch-Up Buffer
+    this.shimmerBufL = new Float32Array(8192);
+    this.shimmerBufR = new Float32Array(8192);
+    this.shimmerWrite = 0;
+    this.shimmerRead1 = 0;
+    this.shimmerRead2 = 4096;
+    this.shimmerFbL = 0;
+    this.shimmerFbR = 0;
+
+    // 9. Ping-Pong Delay Buffers
     this.delayBufL = new Float32Array(96000);
     this.delayBufR = new Float32Array(96000);
     this.delayWriteIdx = 0;
     this.delayLpL = 0;
     this.delayLpR = 0;
 
-    // Schroeder Stereo Algorithmic Reverb
+    // 10. Schroeder Stereo Algorithmic Reverb
     this.combLengthsL = [1557, 1617, 1491, 1422];
     this.combLengthsR = [1580, 1640, 1514, 1445];
     this.combsL = this.combLengthsL.map(len => ({ buf: new Float32Array(len), idx: 0, filter: 0 }));
@@ -1608,10 +1669,11 @@ class AetheriumDSP {
     this.crackleHold = 0;
     this.noiseLpState = 0;
 
-    // Telemetry
+    // Telemetry & Audio Peak for Reactive UI
     this.activeEnvPos = { env1: 0, env2: 0, env3: 0 };
     this.activeLfoVal = { lfo1: 0, lfo2: 0 };
     this.modOffsets = {};
+    this.outputPeak = 0;
 
     for (let i = 0; i < this.maxVoices; i++) {
       this.voices.push(this.createEmptyVoice(i));
@@ -1668,29 +1730,26 @@ class AetheriumDSP {
     this.analyser.connect(this.ctx.destination);
   }
 
-  noteOn(note, velocity = 0.85) {
-    this.initAudio();
+  triggerVoiceParams(voice, note, velocity, isLegatoTransition = false) {
     const freq = 440 * Math.pow(2, (note - 69) / 12);
-
-    let voice = this.voices.find(v => v.active && v.note === note);
-    if (!voice) voice = this.voices.find(v => !v.active);
-    if (!voice) {
-      let releasing = this.voices.filter(v => v.env1.stage === 'release');
-      if (releasing.length > 0) {
-        releasing.sort((a, b) => a.env1.val - b.env1.val);
-        voice = releasing[0];
-      } else {
-        this.voices.sort((a, b) => a.startTime - b.startTime);
-        voice = this.voices[0];
-      }
-    }
-
     voice.active = true;
     voice.note = note;
     voice.velocity = velocity;
     voice.startTime = performance.now();
     voice.targetFreq = freq;
-    voice.freq = SynthState.master.glide <= 0.001 ? freq : (this.lastFreq || freq);
+
+    if (isLegatoTransition) {
+      // Smooth pitch glide without resetting oscillators or envelopes
+      this.lastFreq = freq;
+      return;
+    }
+
+    // In LEGATO mode on fresh note (not overlapping), start directly at target pitch unless glide is > 0 in MONO
+    if (SynthState.voicing === 'legato') {
+      voice.freq = freq;
+    } else {
+      voice.freq = SynthState.master.glide <= 0.001 ? freq : (this.lastFreq || freq);
+    }
     this.lastFreq = freq;
 
     for (let u = 0; u < 7; u++) {
@@ -1710,7 +1769,63 @@ class AetheriumDSP {
      voice.fmtL1, voice.fmtL2, voice.fmtL3, voice.fmtR1, voice.fmtR2, voice.fmtR3].forEach(f => { f.z1 = 0; f.z2 = 0; });
   }
 
+  noteOn(note, velocity = 0.85) {
+    this.initAudio();
+
+    // MONO & LEGATO VOICING (Strictly 1 Voice with Last-Note Priority)
+    if (SynthState.voicing === 'mono' || SynthState.voicing === 'legato') {
+      // Silence any extra voices if user switched from POLY
+      for (let i = 1; i < this.maxVoices; i++) {
+        this.voices[i].active = false;
+        this.voices[i].env1.stage = 'idle';
+        this.voices[i].env1.val = 0;
+      }
+
+      const wasHoldingNote = this.monoNoteStack.length > 0 && this.voices[0].active && this.voices[0].env1.stage !== 'release';
+      this.monoNoteStack = this.monoNoteStack.filter(item => item.note !== note);
+      this.monoNoteStack.push({ note, velocity });
+
+      const v0 = this.voices[0];
+      const isLegato = (SynthState.voicing === 'legato' && wasHoldingNote);
+      this.triggerVoiceParams(v0, note, velocity, isLegato);
+      return;
+    }
+
+    // POLYPHONIC VOICING (8 Voices)
+    let voice = this.voices.find(v => v.active && v.note === note);
+    if (!voice) voice = this.voices.find(v => !v.active);
+    if (!voice) {
+      let releasing = this.voices.filter(v => v.env1.stage === 'release');
+      if (releasing.length > 0) {
+        releasing.sort((a, b) => a.env1.val - b.env1.val);
+        voice = releasing[0];
+      } else {
+        this.voices.sort((a, b) => a.startTime - b.startTime);
+        voice = this.voices[0];
+      }
+    }
+
+    this.triggerVoiceParams(voice, note, velocity, false);
+  }
+
   noteOff(note) {
+    if (SynthState.voicing === 'mono' || SynthState.voicing === 'legato') {
+      this.monoNoteStack = this.monoNoteStack.filter(item => item.note !== note);
+      const v0 = this.voices[0];
+      if (this.monoNoteStack.length > 0) {
+        // Return to previous held note on stack (Last-Note Priority)
+        const prev = this.monoNoteStack[this.monoNoteStack.length - 1];
+        const isLegato = (SynthState.voicing === 'legato');
+        this.triggerVoiceParams(v0, prev.note, prev.velocity, isLegato);
+      } else if (v0.active && v0.env1.stage !== 'release') {
+        ['env1', 'env2', 'env3'].forEach(k => {
+          v0[k].stage = 'release';
+          v0[k].relStart = v0[k].val;
+        });
+      }
+      return;
+    }
+
     for (let v of this.voices) {
       if (v.active && v.note === note && v.env1.stage !== 'release') {
         ['env1', 'env2', 'env3'].forEach(k => {
@@ -1722,6 +1837,7 @@ class AetheriumDSP {
   }
 
   panic() {
+    this.monoNoteStack = [];
     for (let v of this.voices) {
       v.active = false;
       v.env1.stage = 'idle';
@@ -1843,7 +1959,6 @@ class AetheriumDSP {
     const baseSr = this.sampleRate;
     const baseDt = 1 / baseSr;
 
-    // Oversampling factor (1x in CPU Eco mode if user didn't force otherwise, or configured OS)
     const osFactor = SynthState.cpuEco ? 1 : SynthState.oversampling;
     const osSr = baseSr * osFactor;
     const osDt = 1 / osSr;
@@ -1851,12 +1966,12 @@ class AetheriumDSP {
 
     const liveMods = {};
     let latestVoice = null;
+    let blockPeak = 0;
 
     for (let i = 0; i < len; i++) {
       let decimatedL = 0;
       let decimatedR = 0;
 
-      // Oversampled Synthesis Core (Oscillators + Nonlinear Warp + Filter)
       for (let os = 0; os < osFactor; os++) {
         let mixL = 0;
         let mixR = 0;
@@ -1882,7 +1997,7 @@ class AetheriumDSP {
           noiseSample = this.noiseLpState * SynthState.noise.level * 0.4;
         }
 
-        // Active Polyphonic Voices
+        // Active Voices
         for (let vIdx = 0; vIdx < this.maxVoices; vIdx++) {
           const v = this.voices[vIdx];
           if (!v.active) continue;
@@ -2082,7 +2197,6 @@ class AetheriumDSP {
         }
 
         if (osFactor > 1) {
-          // 2-pole Anti-Aliasing Lowpass before decimation
           this.osLpL1 += aaCutoff * (mixL - this.osLpL1);
           this.osLpL2 += aaCutoff * (this.osLpL1 - this.osLpL2);
           this.osLpR1 += aaCutoff * (mixR - this.osLpR1);
@@ -2096,7 +2210,7 @@ class AetheriumDSP {
       }
 
       // ----------------------------------------------------------------------
-      // MASTER FX RACK (8 SERIAL MODULES)
+      // MASTER FX RACK (10 SERIAL MODULES)
       // ----------------------------------------------------------------------
       let fxL = decimatedL;
       let fxR = decimatedR;
@@ -2150,7 +2264,36 @@ class AetheriumDSP {
         fxR = fxR * (1 - pm * 0.3) + pInR * pm;
       }
 
-      // 3. ADVANCED BITCRUSHER
+      // 3. TAPE FLANGER
+      if (SynthState.fx.flanger.on && SynthState.fx.flanger.mix > 0.001) {
+        this.flangerPhase = (this.flangerPhase + SynthState.fx.flanger.rate * baseDt) % 1;
+        const sweepL = 0.5 + 0.5 * Math.sin(this.flangerPhase * Math.PI * 2);
+        const sweepR = 0.5 + 0.5 * Math.sin((this.flangerPhase + 0.15) * Math.PI * 2);
+        const delayL = 12 + sweepL * 220;
+        const delayR = 12 + sweepR * 220;
+
+        const iL0 = Math.floor(delayL);
+        const fL = delayL - iL0;
+        const rL0 = (this.flangerIdx - iL0 + 2048) & 2047;
+        const rL1 = (rL0 - 1 + 2048) & 2047;
+        const tapL = this.flangerBufL[rL0] * (1 - fL) + this.flangerBufL[rL1] * fL;
+
+        const iR0 = Math.floor(delayR);
+        const fR = delayR - iR0;
+        const rR0 = (this.flangerIdx - iR0 + 2048) & 2047;
+        const rR1 = (rR0 - 1 + 2048) & 2047;
+        const tapR = this.flangerBufR[rR0] * (1 - fR) + this.flangerBufR[rR1] * fR;
+
+        this.flangerBufL[this.flangerIdx] = Math.tanh(fxL + tapL * SynthState.fx.flanger.fb);
+        this.flangerBufR[this.flangerIdx] = Math.tanh(fxR + tapR * SynthState.fx.flanger.fb);
+        this.flangerIdx = (this.flangerIdx + 1) & 2047;
+
+        const fm = SynthState.fx.flanger.mix * 0.65;
+        fxL = fxL * (1 - fm * 0.3) + tapL * fm;
+        fxR = fxR * (1 - fm * 0.3) + tapR * fm;
+      }
+
+      // 4. ADVANCED BITCRUSHER
       if (SynthState.fx.crusher.on && SynthState.fx.crusher.mix > 0.001) {
         const srDiv = Math.max(1, Math.round(SynthState.fx.crusher.downsample + (liveMods['fx.crusher.downsample'] || 0) * 30));
         const jitterAmt = SynthState.fx.crusher.jitter;
@@ -2169,7 +2312,7 @@ class AetheriumDSP {
         fxR = fxR * (1 - cm) + this.crushHoldR * cm;
       }
 
-      // 4. ANALOG DISTORTION
+      // 5. ANALOG DISTORTION
       if (SynthState.fx.dist.on && SynthState.fx.dist.mix > 0.001) {
         const drv = Math.max(0, Math.min(1, SynthState.fx.dist.drive + (liveMods['fx.dist.drive'] || 0)));
         const gain = 1 + drv * 18;
@@ -2196,7 +2339,7 @@ class AetheriumDSP {
         fxR = fxR * (1 - dm) + dR * dm * 0.65;
       }
 
-      // 5. 3-BAND TONE EQ SCULPTOR
+      // 6. 3-BAND TONE EQ SCULPTOR
       if (SynthState.fx.eq.on) {
         const lowGain = Math.pow(10, SynthState.fx.eq.low / 20);
         const midGain = Math.pow(10, SynthState.fx.eq.mid / 20);
@@ -2218,7 +2361,7 @@ class AetheriumDSP {
         fxR = this.eqLowR * lowGain + midR * midGain + airR * highGain;
       }
 
-      // 6. STEREO WIDENER / HAAS
+      // 7. STEREO WIDENER / HAAS
       if (SynthState.fx.widener.on) {
         this.haasBufR[this.haasIdx] = fxR;
         const haasSamples = Math.max(1, Math.floor(SynthState.fx.widener.haas * (baseSr * 0.022)));
@@ -2232,7 +2375,36 @@ class AetheriumDSP {
         fxR = mid - side;
       }
 
-      // 7. PING-PONG DELAY
+      // 8. OCTAVE SHIMMER ENGINE (Dual-head Granular +12st Pitch Shifter)
+      if (SynthState.fx.shimmer.on && SynthState.fx.shimmer.mix > 0.001) {
+        const winSize = 4096;
+        this.shimmerBufL[this.shimmerWrite] = fxL + this.shimmerFbL * SynthState.fx.shimmer.fb * 0.72;
+        this.shimmerBufR[this.shimmerWrite] = fxR + this.shimmerFbR * SynthState.fx.shimmer.fb * 0.72;
+
+        // Read at 2x speed (+1 octave) with two crossfaded windows
+        this.shimmerRead1 = (this.shimmerRead1 + 2) % 8192;
+        this.shimmerRead2 = (this.shimmerRead2 + 2) % 8192;
+
+        const dist1 = (this.shimmerWrite - this.shimmerRead1 + 8192) % 8192;
+        const phase1 = (dist1 % winSize) / winSize;
+        const gain1 = Math.sin(phase1 * Math.PI);
+        const gain2 = 1.0 - gain1;
+
+        const r1 = Math.floor(this.shimmerRead1) & 8191;
+        const r2 = Math.floor(this.shimmerRead2) & 8191;
+
+        const shimL = this.shimmerBufL[r1] * gain1 + this.shimmerBufL[r2] * gain2;
+        const shimR = this.shimmerBufR[r1] * gain1 + this.shimmerBufR[r2] * gain2;
+        this.shimmerFbL = shimL;
+        this.shimmerFbR = shimR;
+        this.shimmerWrite = (this.shimmerWrite + 1) & 8191;
+
+        const sm = SynthState.fx.shimmer.mix * 0.65;
+        fxL += shimL * sm;
+        fxR += shimR * sm;
+      }
+
+      // 9. PING-PONG DELAY
       if (SynthState.fx.delay.on && SynthState.fx.delay.mix > 0.001) {
         const dSamples = Math.max(64, Math.min(95000, Math.floor(SynthState.fx.delay.time * baseSr)));
         const rIdx = (this.delayWriteIdx - dSamples + 96000) % 96000;
@@ -2252,7 +2424,7 @@ class AetheriumDSP {
         fxR += tapR * dm;
       }
 
-      // 8. ALGORITHMIC REVERB
+      // 10. ALGORITHMIC REVERB
       if (SynthState.fx.reverb.on && SynthState.fx.reverb.mix > 0.001) {
         const room = 0.72 + SynthState.fx.reverb.size * 0.24;
         const damp = Math.max(0.05, Math.min(0.95, (SynthState.fx.reverb.damp / 15000)));
@@ -2298,13 +2470,6 @@ class AetheriumDSP {
         fxR = fxR * (1 - rm * 0.3) + sumR * rm;
       }
 
-      // Mono / Stereo Master Sum Toggle
-      if (SynthState.monoMode) {
-        const monoSum = (fxL + fxR) * 0.5;
-        fxL = monoSum;
-        fxR = monoSum;
-      }
-
       // Master Gain + DC Blocker (1-Pole Highpass ~10Hz) + Limiter
       const mGain = SynthState.master.gain;
       const rawL = fxL * mGain;
@@ -2315,10 +2480,16 @@ class AetheriumDSP {
       this.dcOutR = rawR - this.dcInR + 0.996 * this.dcOutR;
       this.dcInR = rawR;
 
-      outL[i] = Math.tanh(this.dcOutL);
-      outR[i] = Math.tanh(this.dcOutR);
+      const finalL = Math.tanh(this.dcOutL);
+      const finalR = Math.tanh(this.dcOutR);
+      outL[i] = finalL;
+      outR[i] = finalR;
+
+      const absPeak = Math.max(Math.abs(finalL), Math.abs(finalR));
+      if (absPeak > blockPeak) blockPeak = absPeak;
     }
 
+    this.outputPeak = blockPeak;
     this.modOffsets = liveMods;
     if (!latestVoice) {
       this.activeEnvPos = { env1: 0, env2: 0, env3: 0 };
@@ -2332,8 +2503,8 @@ const DSP = new AetheriumDSP();
 // 4. POLYPHONIC ARPEGGIATOR & CHORD MEMORY PERFORMANCE ENGINE
 // ----------------------------------------------------------------------------
 const KeyElements = new Map();
-const PhysicalHeldNotes = new Set(); // Raw keys physically pressed
-const ActiveSoundingNotes = new Set(); // Actual notes currently playing on DSP
+const PhysicalHeldNotes = new Set();
+const ActiveSoundingNotes = new Set();
 
 class PerformanceEngine {
   constructor() {
@@ -2371,7 +2542,6 @@ class PerformanceEngine {
     const el = KeyElements.get(note);
     if (el) el.classList.add('active');
 
-    // Chord Memory Learn Mode
     if (SynthState.chord.learn) {
       this.learnedChordBuffer.add(note);
       const sorted = Array.from(this.learnedChordBuffer).sort((a, b) => a - b);
@@ -2559,12 +2729,13 @@ class PerformanceEngine {
 const Perf = new PerformanceEngine();
 
 // ----------------------------------------------------------------------------
-// 5. FACTORY PRESETS (ORIGINAL 6 PRESERVED + 4 NEW SHOWCASING ARP, CHORD & FX)
+// 5. FACTORY PRESETS (ALL 10 PRESERVED + 4 NEW SHOWCASING MONO/LEGATO & NEW FX)
 // ----------------------------------------------------------------------------
 const PRESETS = [
   {
     name: "01 // INIT SAW LEAD",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'Basic Shapes', wtPos: 0.66, warpMode: 'none', warpAmt: 0, unison: 3, detune: 0.25, octave: 0, semi: 0, pan: 0, level: 0.85, toFilter: true },
       oscB: { on: false, table: 'Digital Growl', wtPos: 0.2, warpMode: 'none', warpAmt: 0, unison: 1, detune: 0.2, octave: 0, semi: 0, pan: 0, level: 0, toFilter: true },
       sub:  { on: true, shape: 'sine', octave: -1, level: 0.35, toFilter: false },
@@ -2583,10 +2754,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.35, mix: 0.25 },
         phaser: { on: false, rate: 0.6, fb: 0.5, mix: 0.4 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: false, bits: 8, downsample: 6, jitter: 0.15, mix: 0.5 },
         dist: { on: false, mode: 'tube', drive: 0.3, mix: 0.5 },
         eq: { on: false, low: 0, mid: 0, high: 0 },
         widener: { on: false, width: 1.2, haas: 0.15 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: false, time: 0.35, fb: 0.4, mix: 0.25 },
         reverb: { on: true, size: 0.5, damp: 6000, mix: 0.22 }
       },
@@ -2598,6 +2771,7 @@ const PRESETS = [
   {
     name: "02 // RAGE LEAD 303",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'Acid / PWM', wtPos: 0.35, warpMode: 'sync', warpAmt: 0.28, unison: 5, detune: 0.42, octave: 0, semi: 0, pan: 0, level: 0.9, toFilter: true },
       oscB: { on: true, table: 'Basic Shapes', wtPos: 0.95, warpMode: 'bendPlus', warpAmt: 0.3, unison: 3, detune: 0.35, octave: -1, semi: 0, pan: 0, level: 0.55, toFilter: true },
       sub:  { on: true, shape: 'square', octave: -1, level: 0.5, toFilter: true },
@@ -2618,10 +2792,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.45, mix: 0.3 },
         phaser: { on: false, rate: 0.8, fb: 0.5, mix: 0.35 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: false, bits: 6, downsample: 4, jitter: 0.1, mix: 0.35 },
         dist: { on: true, mode: 'diode', drive: 0.68, mix: 0.75 },
         eq: { on: false, low: 2, mid: 1, high: 2 },
         widener: { on: false, width: 1.2, haas: 0.1 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: true, time: 0.234, fb: 0.45, mix: 0.28 },
         reverb: { on: true, size: 0.45, damp: 5000, mix: 0.18 }
       },
@@ -2633,6 +2809,7 @@ const PRESETS = [
   {
     name: "03 // VOWEL TALK GROWL",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'Digital Growl', wtPos: 0.45, warpMode: 'fmFromB', warpAmt: 0.45, unison: 5, detune: 0.55, octave: -1, semi: 0, pan: 0, level: 0.95, toFilter: true },
       oscB: { on: true, table: 'FM Harmonics', wtPos: 0.55, warpMode: 'fold', warpAmt: 0.48, unison: 3, detune: 0.4, octave: -1, semi: 0, pan: 0, level: 0.75, toFilter: true },
       sub:  { on: true, shape: 'sine', octave: -2, level: 0.85, toFilter: false },
@@ -2652,10 +2829,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.5, mix: 0.35 },
         phaser: { on: true, rate: 0.55, fb: 0.6, mix: 0.45 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: true, bits: 7, downsample: 5, jitter: 0.2, mix: 0.4 },
         dist: { on: true, mode: 'tube', drive: 0.72, mix: 0.8 },
         eq: { on: false, low: 0, mid: 0, high: 0 },
         widener: { on: false, width: 1.2, haas: 0.1 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: false, time: 0.3, fb: 0.3, mix: 0.1 },
         reverb: { on: true, size: 0.35, damp: 3500, mix: 0.16 }
       },
@@ -2667,6 +2846,7 @@ const PRESETS = [
   {
     name: "04 // BITCRUSH GLITCH LEAD",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'Metallic Chaos', wtPos: 0.38, warpMode: 'sync', warpAmt: 0.42, unison: 4, detune: 0.38, octave: 0, semi: 0, pan: -0.1, level: 0.9, toFilter: true },
       oscB: { on: true, table: 'FM Harmonics', wtPos: 0.72, warpMode: 'pwm', warpAmt: 0.5, unison: 4, detune: 0.42, octave: 1, semi: 0, pan: 0.1, level: 0.7, toFilter: true },
       sub:  { on: true, shape: 'square', octave: -1, level: 0.45, toFilter: true },
@@ -2686,10 +2866,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.45, mix: 0.35 },
         phaser: { on: false, rate: 1.2, fb: 0.5, mix: 0.4 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: true, bits: 5, downsample: 12, jitter: 0.45, mix: 0.78 },
         dist: { on: true, mode: 'foldback', drive: 0.58, mix: 0.65 },
         eq: { on: false, low: 0, mid: 0, high: 0 },
         widener: { on: false, width: 1.2, haas: 0.1 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: true, time: 0.234, fb: 0.52, mix: 0.38 },
         reverb: { on: true, size: 0.65, damp: 6000, mix: 0.3 }
       },
@@ -2701,6 +2883,7 @@ const PRESETS = [
   {
     name: "05 // CYBER PLUCK",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'FM Harmonics', wtPos: 0.28, warpMode: 'bendMinus', warpAmt: 0.35, unison: 4, detune: 0.28, octave: 0, semi: 0, pan: -0.15, level: 0.85, toFilter: true },
       oscB: { on: true, table: 'Vocal Formant', wtPos: 0.62, warpMode: 'pwm', warpAmt: 0.4, unison: 4, detune: 0.32, octave: 1, semi: 0, pan: 0.15, level: 0.65, toFilter: true },
       sub:  { on: true, shape: 'triangle', octave: -1, level: 0.4, toFilter: true },
@@ -2721,10 +2904,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.4, mix: 0.35 },
         phaser: { on: false, rate: 0.5, fb: 0.4, mix: 0.3 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: false, bits: 12, downsample: 2, jitter: 0, mix: 0.2 },
         dist: { on: false, mode: 'tube', drive: 0.2, mix: 0.3 },
         eq: { on: false, low: 0, mid: 0, high: 0 },
         widener: { on: false, width: 1.2, haas: 0.1 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: true, time: 0.351, fb: 0.52, mix: 0.42 },
         reverb: { on: true, size: 0.72, damp: 7500, mix: 0.38 }
       },
@@ -2736,6 +2921,7 @@ const PRESETS = [
   {
     name: "06 // ETHEREAL PHASER PAD",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'Vocal Formant', wtPos: 0.22, warpMode: 'bendPlus', warpAmt: 0.25, unison: 7, detune: 0.45, octave: 0, semi: 0, pan: -0.25, level: 0.78, toFilter: true },
       oscB: { on: true, table: 'Basic Shapes', wtPos: 0.35, warpMode: 'pwm', warpAmt: 0.45, unison: 7, detune: 0.48, octave: 1, semi: 0, pan: 0.25, level: 0.62, toFilter: true },
       sub:  { on: true, shape: 'sine', octave: -1, level: 0.42, toFilter: false },
@@ -2756,10 +2942,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.65, mix: 0.55 },
         phaser: { on: true, rate: 0.28, fb: 0.65, mix: 0.5 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: false, bits: 12, downsample: 2, jitter: 0, mix: 0.2 },
         dist: { on: false, mode: 'tube', drive: 0.1, mix: 0.2 },
         eq: { on: false, low: 0, mid: 0, high: 0 },
         widener: { on: false, width: 1.2, haas: 0.1 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: true, time: 0.468, fb: 0.55, mix: 0.38 },
         reverb: { on: true, size: 0.92, damp: 6800, mix: 0.58 }
       },
@@ -2771,6 +2959,7 @@ const PRESETS = [
   {
     name: "07 // HYPERSPACE POLY ARP",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'FM Harmonics', wtPos: 0.42, warpMode: 'sync', warpAmt: 0.18, unison: 5, detune: 0.34, octave: 0, semi: 0, pan: -0.2, level: 0.85, toFilter: true },
       oscB: { on: true, table: 'Basic Shapes', wtPos: 0.66, warpMode: 'pwm', warpAmt: 0.35, unison: 5, detune: 0.38, octave: 1, semi: 0, pan: 0.2, level: 0.7, toFilter: true },
       sub:  { on: true, shape: 'sine', octave: -1, level: 0.45, toFilter: false },
@@ -2790,10 +2979,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.48, mix: 0.4 },
         phaser: { on: false, rate: 0.6, fb: 0.4, mix: 0.3 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: false, bits: 12, downsample: 2, jitter: 0, mix: 0.2 },
         dist: { on: true, mode: 'tube', drive: 0.25, mix: 0.4 },
         eq: { on: true, low: 2.5, mid: -1.5, high: 4.5 },
         widener: { on: true, width: 1.45, haas: 0.22 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: true, time: 0.351, fb: 0.48, mix: 0.38 },
         reverb: { on: true, size: 0.78, damp: 8500, mix: 0.36 }
       },
@@ -2805,6 +2996,7 @@ const PRESETS = [
   {
     name: "08 // DARK TRAP CHORD STAB",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'Acid / PWM', wtPos: 0.52, warpMode: 'fold', warpAmt: 0.38, unison: 6, detune: 0.46, octave: 0, semi: 0, pan: -0.15, level: 0.9, toFilter: true },
       oscB: { on: true, table: 'Digital Growl', wtPos: 0.3, warpMode: 'bendPlus', warpAmt: 0.35, unison: 5, detune: 0.42, octave: -1, semi: 0, pan: 0.15, level: 0.75, toFilter: true },
       sub:  { on: true, shape: 'sine', octave: -1, level: 0.65, toFilter: false },
@@ -2824,10 +3016,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.5, mix: 0.35 },
         phaser: { on: false, rate: 0.5, fb: 0.4, mix: 0.3 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: true, bits: 9, downsample: 3, jitter: 0.12, mix: 0.32 },
         dist: { on: true, mode: 'hard', drive: 0.62, mix: 0.65 },
         eq: { on: true, low: 4.0, mid: -2.0, high: 3.5 },
         widener: { on: true, width: 1.55, haas: 0.28 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: true, time: 0.234, fb: 0.42, mix: 0.26 },
         reverb: { on: true, size: 0.62, damp: 4800, mix: 0.28 }
       },
@@ -2839,6 +3033,7 @@ const PRESETS = [
   {
     name: "09 // NEON DREAMSTRUM KEYS",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'Vocal Formant', wtPos: 0.48, warpMode: 'pwm', warpAmt: 0.28, unison: 4, detune: 0.3, octave: 0, semi: 0, pan: -0.2, level: 0.82, toFilter: true },
       oscB: { on: true, table: 'FM Harmonics', wtPos: 0.22, warpMode: 'bendMinus', warpAmt: 0.22, unison: 4, detune: 0.32, octave: 1, semi: 0, pan: 0.2, level: 0.58, toFilter: true },
       sub:  { on: true, shape: 'sine', octave: -1, level: 0.38, toFilter: false },
@@ -2858,10 +3053,12 @@ const PRESETS = [
       fx: {
         hyper: { on: true, detune: 0.55, mix: 0.45 },
         phaser: { on: true, rate: 0.35, fb: 0.5, mix: 0.35 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: false, bits: 12, downsample: 2, jitter: 0, mix: 0.2 },
         dist: { on: false, mode: 'tube', drive: 0.15, mix: 0.2 },
         eq: { on: true, low: 1.5, mid: 0.5, high: 5.0 },
         widener: { on: true, width: 1.65, haas: 0.35 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: true, time: 0.468, fb: 0.5, mix: 0.35 },
         reverb: { on: true, size: 0.88, damp: 7200, mix: 0.48 }
       },
@@ -2873,6 +3070,7 @@ const PRESETS = [
   {
     name: "10 // INDUSTRIAL PULSE MACHINE",
     data: {
+      voicing: 'poly',
       oscA: { on: true, table: 'Metallic Chaos', wtPos: 0.65, warpMode: 'rmFromB', warpAmt: 0.52, unison: 3, detune: 0.35, octave: -1, semi: 0, pan: 0, level: 0.95, toFilter: true },
       oscB: { on: true, table: 'Digital Growl', wtPos: 0.78, warpMode: 'fold', warpAmt: 0.55, unison: 3, detune: 0.3, octave: 0, semi: 7, pan: 0, level: 0.8, toFilter: true },
       sub:  { on: true, shape: 'square', octave: -2, level: 0.75, toFilter: true },
@@ -2892,16 +3090,166 @@ const PRESETS = [
       fx: {
         hyper: { on: false, detune: 0.3, mix: 0.2 },
         phaser: { on: true, rate: 1.4, fb: 0.65, mix: 0.45 },
+        flanger: { on: false, rate: 0.35, fb: 0.5, mix: 0.35 },
         crusher: { on: true, bits: 6, downsample: 8, jitter: 0.35, mix: 0.6 },
         dist: { on: true, mode: 'foldback', drive: 0.75, mix: 0.75 },
         eq: { on: true, low: 5.5, mid: 2.0, high: 4.0 },
         widener: { on: true, width: 1.35, haas: 0.15 },
+        shimmer: { on: false, fb: 0.5, mix: 0.3 },
         delay: { on: true, time: 0.175, fb: 0.48, mix: 0.32 },
         reverb: { on: true, size: 0.45, damp: 4500, mix: 0.22 }
       },
       arp: { on: true, hold: false, mode: 'poly', rate: 1, octaves: 2, gate: 0.45, swing: 0.08, velAccent: 0.45 },
       chord: { on: false, learn: false, preset: 'trap5', intervals: [0, 7, 12, 13], strum: 0, spreadVel: 0.1 },
       master: { glide: 0.02, gain: 0.7 }
+    }
+  },
+  {
+    name: "11 // LEGATO G-FUNK WHISTLE",
+    data: {
+      voicing: 'legato',
+      oscA: { on: true, table: 'Basic Shapes', wtPos: 0.18, warpMode: 'none', warpAmt: 0, unison: 2, detune: 0.14, octave: 1, semi: 0, pan: 0, level: 0.9, toFilter: true },
+      oscB: { on: true, table: 'Basic Shapes', wtPos: 0.33, warpMode: 'pwm', warpAmt: 0.25, unison: 2, detune: 0.18, octave: 2, semi: 0, pan: 0, level: 0.35, toFilter: true },
+      sub:  { on: true, shape: 'sine', octave: -1, level: 0.4, toFilter: false },
+      noise:{ on: false, color: 'pink', cutoff: 3500, level: 0.1, toFilter: true },
+      filter: { on: true, type: 'lp24', cutoff: 2800, reso: 0.48, drive: 0.22, fat: 0.35, keytrack: 0.6, mix: 1 },
+      env1: { a: 0.02, d: 0.4, s: 0.85, r: 0.28 },
+      env2: { a: 0.03, d: 0.35, s: 0.2, r: 0.25 },
+      env3: { a: 0.1, d: 0.5, s: 0.5, r: 0.4 },
+      lfo1: { shape: 'sine', sync: 'hz', rate: 5.8, phase: 0 },
+      lfo2: { shape: 'triangle', sync: 'hz', rate: 0.8, phase: 0 },
+      matrix: [
+        { src: 'lfo1', dst: 'global.pitch', amt: 0.045 },
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.22 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.32, mix: 0.3 },
+        phaser: { on: false, rate: 0.5, fb: 0.4, mix: 0.3 },
+        flanger: { on: true, rate: 0.25, fb: 0.42, mix: 0.28 },
+        crusher: { on: false, bits: 12, downsample: 2, jitter: 0, mix: 0.2 },
+        dist: { on: true, mode: 'tube', drive: 0.28, mix: 0.4 },
+        eq: { on: true, low: 2.0, mid: 1.5, high: 2.5 },
+        widener: { on: true, width: 1.3, haas: 0.18 },
+        shimmer: { on: false, fb: 0.4, mix: 0.2 },
+        delay: { on: true, time: 0.351, fb: 0.38, mix: 0.28 },
+        reverb: { on: true, size: 0.65, damp: 6200, mix: 0.32 }
+      },
+      arp: { on: false, hold: false, mode: 'up', rate: 1, octaves: 1, gate: 0.6, swing: 0, velAccent: 0.2 },
+      chord: { on: false, learn: false, preset: 'min7', intervals: [0, 3, 7, 10], strum: 0, spreadVel: 0.1 },
+      master: { glide: 0.14, gain: 0.76 }
+    }
+  },
+  {
+    name: "12 // MONO REESE SUB BASS",
+    data: {
+      voicing: 'mono',
+      oscA: { on: true, table: 'Basic Shapes', wtPos: 0.66, warpMode: 'bendPlus', warpAmt: 0.22, unison: 6, detune: 0.48, octave: -1, semi: 0, pan: -0.1, level: 0.92, toFilter: true },
+      oscB: { on: true, table: 'Acid / PWM', wtPos: 0.45, warpMode: 'pwm', warpAmt: 0.35, unison: 6, detune: 0.52, octave: -1, semi: 0, pan: 0.1, level: 0.85, toFilter: true },
+      sub:  { on: true, shape: 'sine', octave: -2, level: 0.9, toFilter: false },
+      noise:{ on: false, color: 'pink', cutoff: 2000, level: 0.1, toFilter: true },
+      filter: { on: true, type: 'lp24', cutoff: 380, reso: 0.42, drive: 0.72, fat: 0.75, keytrack: 0.25, mix: 1 },
+      env1: { a: 0.012, d: 0.5, s: 0.9, r: 0.28 },
+      env2: { a: 0.015, d: 0.38, s: 0.15, r: 0.22 },
+      env3: { a: 0.1, d: 0.5, s: 0.5, r: 0.4 },
+      lfo1: { shape: 'sine', sync: 'hz', rate: 0.65, phase: 0 },
+      lfo2: { shape: 'triangle', sync: 'sync', rate: 2, phase: 0 },
+      matrix: [
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.34 },
+        { src: 'lfo1', dst: 'oscA.wtPos', amt: 0.25 },
+        { src: 'lfo1', dst: 'filter.cutoff', amt: 0.15 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.4, mix: 0.25 },
+        phaser: { on: false, rate: 0.4, fb: 0.5, mix: 0.3 },
+        flanger: { on: true, rate: 0.18, fb: 0.48, mix: 0.32 },
+        crusher: { on: false, bits: 10, downsample: 2, jitter: 0, mix: 0.2 },
+        dist: { on: true, mode: 'tube', drive: 0.68, mix: 0.72 },
+        eq: { on: true, low: 5.0, mid: -2.5, high: 2.0 },
+        widener: { on: true, width: 1.35, haas: 0.12 },
+        shimmer: { on: false, fb: 0.4, mix: 0.2 },
+        delay: { on: false, time: 0.3, fb: 0.3, mix: 0.1 },
+        reverb: { on: true, size: 0.3, damp: 3200, mix: 0.12 }
+      },
+      arp: { on: false, hold: false, mode: 'up', rate: 1, octaves: 1, gate: 0.6, swing: 0, velAccent: 0.2 },
+      chord: { on: false, learn: false, preset: 'min7', intervals: [0, 3, 7, 10], strum: 0, spreadVel: 0.1 },
+      master: { glide: 0.16, gain: 0.76 }
+    }
+  },
+  {
+    name: "13 // CELESTIAL SHIMMER CHOIR",
+    data: {
+      voicing: 'poly',
+      oscA: { on: true, table: 'Vocal Formant', wtPos: 0.55, warpMode: 'bendPlus', warpAmt: 0.2, unison: 7, detune: 0.42, octave: 0, semi: 0, pan: -0.25, level: 0.85, toFilter: true },
+      oscB: { on: true, table: 'FM Harmonics', wtPos: 0.18, warpMode: 'pwm', warpAmt: 0.3, unison: 7, detune: 0.44, octave: 1, semi: 0, pan: 0.25, level: 0.68, toFilter: true },
+      sub:  { on: true, shape: 'sine', octave: -1, level: 0.4, toFilter: false },
+      noise:{ on: true, color: 'pink', cutoff: 4500, level: 0.14, toFilter: true },
+      filter: { on: true, type: 'lp12', cutoff: 2600, reso: 0.24, drive: 0.1, fat: 0.3, keytrack: 0.45, mix: 1 },
+      env1: { a: 0.55, d: 1.5, s: 0.85, r: 1.6 },
+      env2: { a: 0.8,  d: 1.8, s: 0.5,  r: 1.5 },
+      env3: { a: 0.4,  d: 1.2, s: 0.5,  r: 1.2 },
+      lfo1: { shape: 'sine', sync: 'hz', rate: 0.4, phase: 0 },
+      lfo2: { shape: 'triangle', sync: 'hz', rate: 0.25, phase: 0.4 },
+      matrix: [
+        { src: 'lfo1', dst: 'oscA.wtPos', amt: 0.42 },
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.28 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.6, mix: 0.5 },
+        phaser: { on: false, rate: 0.3, fb: 0.5, mix: 0.3 },
+        flanger: { on: true, rate: 0.15, fb: 0.45, mix: 0.3 },
+        crusher: { on: false, bits: 12, downsample: 2, jitter: 0, mix: 0.2 },
+        dist: { on: false, mode: 'tube', drive: 0.1, mix: 0.2 },
+        eq: { on: true, low: 1.5, mid: -1.0, high: 5.5 },
+        widener: { on: true, width: 1.75, haas: 0.35 },
+        shimmer: { on: true, fb: 0.68, mix: 0.52 },
+        delay: { on: true, time: 0.468, fb: 0.52, mix: 0.36 },
+        reverb: { on: true, size: 0.94, damp: 7800, mix: 0.58 }
+      },
+      arp: { on: false, hold: false, mode: 'up', rate: 1, octaves: 2, gate: 0.6, swing: 0, velAccent: 0.2 },
+      chord: { on: false, learn: false, preset: 'maj9', intervals: [0, 4, 7, 11, 14], strum: 0.02, spreadVel: 0.1 },
+      master: { glide: 0.0, gain: 0.72 }
+    }
+  },
+  {
+    name: "14 // JET FLANGER ACID MONO",
+    data: {
+      voicing: 'mono',
+      oscA: { on: true, table: 'Acid / PWM', wtPos: 0.68, warpMode: 'sync', warpAmt: 0.45, unison: 3, detune: 0.28, octave: 0, semi: 0, pan: 0, level: 0.92, toFilter: true },
+      oscB: { on: true, table: 'Metallic Chaos', wtPos: 0.25, warpMode: 'fold', warpAmt: 0.32, unison: 2, detune: 0.22, octave: -1, semi: 0, pan: 0, level: 0.65, toFilter: true },
+      sub:  { on: true, shape: 'square', octave: -1, level: 0.55, toFilter: true },
+      noise:{ on: true, color: 'white', cutoff: 8000, level: 0.16, toFilter: true },
+      filter: { on: true, type: 'lp24', cutoff: 460, reso: 0.82, drive: 0.72, fat: 0.5, keytrack: 0.55, mix: 1 },
+      env1: { a: 0.004, d: 0.35, s: 0.68, r: 0.2 },
+      env2: { a: 0.004, d: 0.22, s: 0.05, r: 0.18 },
+      env3: { a: 0.02, d: 0.4, s: 0.0, r: 0.2 },
+      lfo1: { shape: 'saw', sync: 'sync', rate: 6, phase: 0 },
+      lfo2: { shape: 'sine', sync: 'hz', rate: 3.5, phase: 0 },
+      matrix: [
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.68 },
+        { src: 'env2', dst: 'oscA.warpAmt', amt: 0.42 },
+        { src: 'lfo1', dst: 'oscA.wtPos', amt: 0.35 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: false, detune: 0.3, mix: 0.2 },
+        phaser: { on: false, rate: 0.5, fb: 0.4, mix: 0.3 },
+        flanger: { on: true, rate: 0.42, fb: 0.74, mix: 0.62 },
+        crusher: { on: true, bits: 8, downsample: 3, jitter: 0.1, mix: 0.28 },
+        dist: { on: true, mode: 'diode', drive: 0.74, mix: 0.78 },
+        eq: { on: true, low: 3.5, mid: 1.5, high: 3.0 },
+        widener: { on: true, width: 1.35, haas: 0.18 },
+        shimmer: { on: false, fb: 0.4, mix: 0.2 },
+        delay: { on: true, time: 0.234, fb: 0.48, mix: 0.32 },
+        reverb: { on: true, size: 0.48, damp: 5200, mix: 0.22 }
+      },
+      arp: { on: false, hold: false, mode: 'up', rate: 1, octaves: 2, gate: 0.5, swing: 0, velAccent: 0.25 },
+      chord: { on: false, learn: false, preset: 'trap5', intervals: [0, 7, 12, 13], strum: 0, spreadVel: 0.1 },
+      master: { glide: 0.09, gain: 0.72 }
     }
   }
 ];
@@ -3084,7 +3432,7 @@ function syncPerfButtonsUI() {
   else if (SynthState.arp.on && SynthState.chord.on) statusEl.textContent = 'ARP + CHORD ACTIVE';
   else if (SynthState.arp.on) statusEl.textContent = `ARP [${SynthState.arp.mode.toUpperCase()}]`;
   else if (SynthState.chord.on) statusEl.textContent = `CHORD [${SynthState.chord.preset.toUpperCase()}]`;
-  else statusEl.textContent = 'READY';
+  else statusEl.textContent = `VOICE: ${SynthState.voicing.toUpperCase()}`;
 }
 
 function refreshAllUI() {
@@ -3107,6 +3455,11 @@ function refreshAllUI() {
     });
   });
 
+  // Voicing Pills
+  document.querySelectorAll('#voicingPills .pill-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.voicing === SynthState.voicing);
+  });
+
   document.getElementById('oscA_table').value = SynthState.oscA.table;
   document.getElementById('oscA_warpMode').value = SynthState.oscA.warpMode;
   document.getElementById('oscB_table').value = SynthState.oscB.table;
@@ -3121,10 +3474,6 @@ function refreshAllUI() {
   const ecoBtn = document.getElementById('cpuEcoBtn');
   ecoBtn.classList.toggle('active', SynthState.cpuEco);
   ecoBtn.classList.toggle('amber', SynthState.cpuEco);
-
-  const smBtn = document.getElementById('stereoMonoBtn');
-  smBtn.textContent = SynthState.monoMode ? 'MONO' : 'STEREO';
-  smBtn.classList.toggle('plasma', SynthState.monoMode);
 
   updateChordDisplayText();
   syncPerfButtonsUI();
@@ -3201,6 +3550,9 @@ function updateModTabControls() {
 
 function applyPatchData(copy) {
   Perf.panicAll();
+  if (copy.voicing) SynthState.voicing = copy.voicing;
+  else SynthState.voicing = 'poly';
+
   if (copy.oscA) Object.assign(SynthState.oscA, copy.oscA);
   if (copy.oscB) Object.assign(SynthState.oscB, copy.oscB);
   if (copy.sub) Object.assign(SynthState.sub, copy.sub);
@@ -3215,10 +3567,14 @@ function applyPatchData(copy) {
   if (copy.fx) {
     if (copy.fx.hyper) Object.assign(SynthState.fx.hyper, copy.fx.hyper);
     if (copy.fx.phaser) Object.assign(SynthState.fx.phaser, copy.fx.phaser);
+    if (copy.fx.flanger) Object.assign(SynthState.fx.flanger, copy.fx.flanger);
+    else SynthState.fx.flanger.on = false;
     if (copy.fx.crusher) Object.assign(SynthState.fx.crusher, copy.fx.crusher);
     if (copy.fx.dist) Object.assign(SynthState.fx.dist, copy.fx.dist);
     if (copy.fx.eq) Object.assign(SynthState.fx.eq, copy.fx.eq);
     if (copy.fx.widener) Object.assign(SynthState.fx.widener, copy.fx.widener);
+    if (copy.fx.shimmer) Object.assign(SynthState.fx.shimmer, copy.fx.shimmer);
+    else SynthState.fx.shimmer.on = false;
     if (copy.fx.delay) Object.assign(SynthState.fx.delay, copy.fx.delay);
     if (copy.fx.reverb) Object.assign(SynthState.fx.reverb, copy.fx.reverb);
   }
@@ -3282,16 +3638,26 @@ function setupControls() {
   });
   document.getElementById('initPresetBtn').addEventListener('click', () => loadPreset(0));
 
+  // Voicing Mode Pills (POLY / MONO / LEGATO)
+  document.querySelectorAll('#voicingPills .pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      SynthState.voicing = btn.dataset.voicing;
+      Perf.panicAll();
+      refreshAllUI();
+    });
+  });
+
   // JSON Export
   document.getElementById('exportJsonBtn').addEventListener('click', () => {
     const currentName = PRESETS[parseInt(presetSel.value)]?.name || 'Custom_Patch';
     const payload = {
       synth: 'AETHERIUM WT-8',
-      version: '2.0',
+      version: '3.0',
       name: currentName,
       exportedAt: new Date().toISOString(),
       data: JSON.parse(JSON.stringify({
         bpm: SynthState.bpm,
+        voicing: SynthState.voicing,
         oscA: SynthState.oscA,
         oscB: SynthState.oscB,
         sub: SynthState.sub,
@@ -3363,12 +3729,6 @@ function setupControls() {
       SynthState.oversampling = 1;
       document.getElementById('oversampleSelect').value = '1';
     }
-    refreshAllUI();
-  });
-
-  // Stereo / Mono Toggle
-  document.getElementById('stereoMonoBtn').addEventListener('click', () => {
-    SynthState.monoMode = !SynthState.monoMode;
     refreshAllUI();
   });
 
@@ -3562,7 +3922,7 @@ function setupControls() {
 }
 
 // ----------------------------------------------------------------------------
-// 8. HIGH-FPS CANVAS RENDERERS
+// 8. HIGH-FPS CANVAS RENDERERS & REACTIVE CHASSIS LEDS
 // ----------------------------------------------------------------------------
 function drawWavetableDisplay(canvasId, oscKey) {
   const cvs = document.getElementById(canvasId);
@@ -3571,7 +3931,7 @@ function drawWavetableDisplay(canvasId, oscKey) {
   const w = cvs.width, h = cvs.height;
   const osc = SynthState[oscKey];
 
-  ctx.fillStyle = '#07090c';
+  ctx.fillStyle = '#06080b';
   ctx.fillRect(0, 0, w, h);
 
   ctx.strokeStyle = 'rgba(0, 240, 255, 0.08)';
@@ -3602,7 +3962,7 @@ function drawWavetableDisplay(canvasId, oscKey) {
 
     if (isCenter && osc.on) {
       ctx.shadowColor = '#00f0ff';
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 9;
     } else {
       ctx.shadowBlur = 0;
     }
@@ -3610,19 +3970,15 @@ function drawWavetableDisplay(canvasId, oscKey) {
     const steps = 110;
     for (let i = 0; i <= steps; i++) {
       const ph = i / steps;
-      const val = sampleWavetable(osc.table, framePos, ph, osc.warpMode, curWarp, Math.sin(ph * Math.PI * 4) * 0.5);
-      const px = 12 + xShift + ph * (w - 24);
-      const py = (h / 2) + yShift - val * (h * 0.32);
+      const val = sampleWavetable(osc.table, framePos, ph, osc.warpMode, curWarp, Math.sin(ph * Math.PI * 4));
+      const px = 8 + ph * (w - 16) + xShift;
+      const py = h * 0.5 - val * (h * 0.31) + yShift;
       if (i === 0) ctx.moveTo(px, py);
       else ctx.lineTo(px, py);
     }
     ctx.stroke();
   }
   ctx.shadowBlur = 0;
-
-  ctx.fillStyle = 'rgba(0, 240, 255, 0.75)';
-  ctx.font = 'bold 9px Consolas, monospace';
-  ctx.fillText(`FRM ${Math.round(curPos * 63) + 1}/64`, 6, 12);
 }
 
 function drawEnvelopeDisplay() {
@@ -3630,56 +3986,79 @@ function drawEnvelopeDisplay() {
   if (!cvs) return;
   const ctx = cvs.getContext('2d');
   const w = cvs.width, h = cvs.height;
-
-  ctx.fillStyle = '#07090c';
-  ctx.fillRect(0, 0, w, h);
-
   const tab = SynthState.activeModTab.startsWith('env') ? SynthState.activeModTab : 'env1';
   const env = SynthState[tab];
 
-  const padX = 14, padY = 12;
-  const usableW = w - padX * 2, usableH = h - padY * 2;
+  ctx.fillStyle = '#06080b';
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 1;
+  for (let gx = 40; gx < w; gx += 40) {
+    ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+  }
 
   const aNorm = valToNorm(env.a, 0.002, 4, 'exp');
   const dNorm = valToNorm(env.d, 0.01, 5, 'exp');
   const rNorm = valToNorm(env.r, 0.01, 6, 'exp');
 
-  const x0 = padX, y0 = h - padY;
-  const x1 = x0 + 12 + aNorm * (usableW * 0.28), y1 = padY;
-  const x2 = x1 + 14 + dNorm * (usableW * 0.30), y2 = padY + (1 - env.s) * usableH;
-  const x3 = x2 + usableW * 0.16, y3 = y2;
-  const x4 = Math.min(w - padX, x3 + 14 + rNorm * (usableW * 0.26)), y4 = y0;
+  const pad = 10;
+  const usableW = w - pad * 2;
+  const usableH = h - pad * 2;
+
+  const x0 = pad;
+  const y0 = h - pad;
+  const xA = x0 + Math.max(8, aNorm * usableW * 0.32);
+  const yA = pad;
+  const xD = xA + Math.max(10, dNorm * usableW * 0.34);
+  const yS = pad + (1 - env.s) * usableH;
+  const xS = xD + usableW * 0.14;
+  const xR = Math.min(w - pad, xS + Math.max(10, rNorm * usableW * 0.34));
+  const yR = h - pad;
+
+  const grad = ctx.createLinearGradient(0, pad, 0, h - pad);
+  grad.addColorStop(0, 'rgba(0, 240, 255, 0.32)');
+  grad.addColorStop(1, 'rgba(0, 240, 255, 0.0)');
 
   ctx.beginPath();
   ctx.moveTo(x0, y0);
-  ctx.lineTo(x1, y1);
-  ctx.quadraticCurveTo(x1 + (x2 - x1) * 0.25, y2, x2, y2);
-  ctx.lineTo(x3, y3);
-  ctx.quadraticCurveTo(x3 + (x4 - x3) * 0.25, y4, x4, y4);
+  ctx.lineTo(xA, yA);
+  ctx.lineTo(xD, yS);
+  ctx.lineTo(xS, yS);
+  ctx.lineTo(xR, yR);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(xA, yA);
+  ctx.lineTo(xD, yS);
+  ctx.lineTo(xS, yS);
+  ctx.lineTo(xR, yR);
   ctx.strokeStyle = '#00f0ff';
-  ctx.lineWidth = 2.2;
+  ctx.lineWidth = 2;
   ctx.shadowColor = '#00f0ff';
-  ctx.shadowBlur = 8;
+  ctx.shadowBlur = 6;
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  [[x1, y1], [x2, y2], [x4, y4]].forEach(([px, py]) => {
+  [[xA, yA], [xD, yS], [xR, yR]].forEach(([px, py]) => {
     ctx.beginPath();
-    ctx.arc(px, py, 4.5, 0, Math.PI * 2);
-    ctx.fillStyle = '#07090c';
+    ctx.arc(px, py, 3.8, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
     ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#ffffff';
-    ctx.stroke();
   });
 
   const liveVal = DSP.activeEnvPos[tab] || 0;
   if (liveVal > 0.005) {
-    const dotY = y0 - liveVal * usableH;
     ctx.beginPath();
-    ctx.arc(x1, dotY, 4.5, 0, Math.PI * 2);
+    ctx.arc(xA, h - pad - liveVal * usableH, 4.5, 0, Math.PI * 2);
     ctx.fillStyle = '#ffaa00';
+    ctx.shadowColor = '#ffaa00';
+    ctx.shadowBlur = 8;
     ctx.fill();
+    ctx.shadowBlur = 0;
   }
 }
 
@@ -3688,133 +4067,130 @@ function drawLFODisplay() {
   if (!cvs) return;
   const ctx = cvs.getContext('2d');
   const w = cvs.width, h = cvs.height;
+  const tab = SynthState.activeModTab.startsWith('lfo') ? SynthState.activeModTab : 'lfo1';
+  const lfo = SynthState[tab];
 
-  ctx.fillStyle = '#07090c';
+  ctx.fillStyle = '#06080b';
   ctx.fillRect(0, 0, w, h);
 
-  ctx.strokeStyle = 'rgba(255, 59, 48, 0.12)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
   ctx.beginPath();
   ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
   ctx.stroke();
 
-  const tab = SynthState.activeModTab.startsWith('lfo') ? SynthState.activeModTab : 'lfo1';
-  const lfo = SynthState[tab];
-
+  const pad = 10;
   ctx.beginPath();
   ctx.strokeStyle = '#ff3b30';
-  ctx.lineWidth = 2.2;
+  ctx.lineWidth = 2;
   ctx.shadowColor = '#ff3b30';
-  ctx.shadowBlur = 8;
+  ctx.shadowBlur = 6;
 
-  const steps = 160;
+  const steps = 150;
   for (let i = 0; i <= steps; i++) {
-    const p = (i / steps + lfo.phase) % 1;
+    const t = i / steps;
+    const p = (t * 2 + lfo.phase) % 1;
     let val = 0;
     if (lfo.shape === 'sine') val = Math.sin(p * Math.PI * 2);
     else if (lfo.shape === 'triangle') val = 1 - 4 * Math.abs(Math.round(p - 0.25) - (p - 0.25));
     else if (lfo.shape === 'saw') val = 2 * p - 1;
     else if (lfo.shape === 'square') val = p < 0.5 ? 1 : -1;
-    else val = Math.sin(Math.floor(p * 8) * 12.9898) > 0 ? 0.7 : -0.7;
+    else val = Math.sin(Math.floor(p * 8) * 12.9898) > 0 ? 0.75 : -0.75;
 
-    const px = 12 + (i / steps) * (w - 24);
-    const py = (h / 2) - val * (h * 0.36);
+    const px = pad + t * (w - pad * 2);
+    const py = h * 0.5 - val * (h * 0.36);
     if (i === 0) ctx.moveTo(px, py);
     else ctx.lineTo(px, py);
   }
   ctx.stroke();
   ctx.shadowBlur = 0;
-
-  const curVal = DSP.activeLfoVal[tab] || 0;
-  ctx.fillStyle = '#ffaa00';
-  ctx.beginPath();
-  ctx.arc(w - 18, (h / 2) - curVal * (h * 0.36), 4.5, 0, Math.PI * 2);
-  ctx.fill();
 }
 
-const topTimeData = new Uint8Array(1024);
-const topFreqData = new Uint8Array(512);
+const topScopeCvs = document.getElementById('topScopeCanvas');
+const topScopeCtx = topScopeCvs.getContext('2d');
+const timeData = new Uint8Array(1024);
+const freqData = new Uint8Array(512);
 
 function drawTopVisualizer() {
-  const cvs = document.getElementById('topScopeCanvas');
-  if (!cvs) return;
-  const ctx = cvs.getContext('2d');
-  const w = cvs.width, h = cvs.height;
+  const w = topScopeCvs.width, h = topScopeCvs.height;
+  topScopeCtx.fillStyle = '#06080b';
+  topScopeCtx.fillRect(0, 0, w, h);
 
-  ctx.fillStyle = '#07090c';
-  ctx.fillRect(0, 0, w, h);
+  // Subtle CRT center line
+  topScopeCtx.strokeStyle = 'rgba(255,255,255,0.06)';
+  topScopeCtx.lineWidth = 1;
+  topScopeCtx.beginPath();
+  topScopeCtx.moveTo(0, h / 2);
+  topScopeCtx.lineTo(w, h / 2);
+  topScopeCtx.stroke();
 
-  if (!DSP.analyser) {
-    ctx.fillStyle = '#475569';
-    ctx.font = '9px Consolas, monospace';
-    ctx.fillText('DSP STANDBY', 34, 22);
-    return;
-  }
+  if (!DSP.analyser) return;
 
-  if (SynthState.scopeMode === 'fft' || SynthState.scopeMode === 'both') {
-    DSP.analyser.getByteFrequencyData(topFreqData);
-    const bars = 34;
+  if (SynthState.scopeMode === 'both' || SynthState.scopeMode === 'fft') {
+    DSP.analyser.getByteFrequencyData(freqData);
+    const bars = 26;
     const barW = w / bars;
     for (let i = 0; i < bars; i++) {
-      const bin = Math.floor(Math.pow(i / bars, 1.7) * 260);
-      const val = topFreqData[bin] / 255;
-      const barH = val * (h - 2);
-      ctx.fillStyle = 'rgba(255, 59, 48, 0.45)';
-      ctx.fillRect(i * barW, h - barH, barW - 1, barH);
+      const val = freqData[i * 3] / 255;
+      const barH = val * h * 0.9;
+      topScopeCtx.fillStyle = `rgba(0, 240, 255, ${0.18 + val * 0.45})`;
+      topScopeCtx.fillRect(i * barW + 1, h - barH, barW - 2, barH);
     }
   }
 
-  if (SynthState.scopeMode === 'scope' || SynthState.scopeMode === 'both') {
-    DSP.analyser.getByteTimeDomainData(topTimeData);
-    ctx.beginPath();
-    ctx.strokeStyle = '#00f0ff';
-    ctx.lineWidth = 1.6;
-
-    let startIdx = 0;
-    for (let i = 1; i < 256; i++) {
-      if (topTimeData[i - 1] < 128 && topTimeData[i] >= 128) {
-        startIdx = i;
-        break;
-      }
+  if (SynthState.scopeMode === 'both' || SynthState.scopeMode === 'scope') {
+    DSP.analyser.getByteTimeDomainData(timeData);
+    topScopeCtx.beginPath();
+    topScopeCtx.strokeStyle = '#ff3b30';
+    topScopeCtx.lineWidth = 1.6;
+    topScopeCtx.shadowColor = '#ff3b30';
+    topScopeCtx.shadowBlur = 4;
+    const step = Math.floor(timeData.length / w);
+    for (let x = 0; x < w; x++) {
+      const v = (timeData[x * step] - 128) / 128;
+      const y = h * 0.5 + v * (h * 0.44);
+      if (x === 0) topScopeCtx.moveTo(x, y);
+      else topScopeCtx.lineTo(x, y);
     }
-
-    const slice = 256;
-    for (let i = 0; i < slice; i++) {
-      const v = (topTimeData[startIdx + i] - 128) / 128;
-      const px = (i / (slice - 1)) * w;
-      const py = (h / 2) + v * (h * 0.44);
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    }
-    ctx.stroke();
+    topScopeCtx.stroke();
+    topScopeCtx.shadowBlur = 0;
   }
 }
 
-function updateModulationRingsAndTelemetry() {
-  const r = 20.5;
-  const circ = 2 * Math.PI * r;
+function updateLiveTelemetry() {
+  const activeCount = DSP.voices.filter(v => v.active).length;
+  const maxV = (SynthState.voicing === 'mono' || SynthState.voicing === 'legato') ? 1 : 8;
+  document.getElementById('voiceCounter').textContent = `${Math.min(activeCount, maxV)}/${maxV}`;
+  const vLed = document.getElementById('voiceLed');
+  vLed.classList.toggle('active-cyan', activeCount > 0 && SynthState.voicing === 'poly');
+  vLed.classList.toggle('active-plasma', activeCount > 0 && SynthState.voicing !== 'poly');
+
+  // Reactive Audio Aura on Chassis & Logo
+  const peak = DSP.outputPeak || 0;
+  const chassis = document.getElementById('synthApp');
+  const logo = document.getElementById('brandLogo');
+  if (peak > 0.02) {
+    const glowAlpha = Math.min(0.45, peak * 0.55);
+    const accent = SynthState.voicing === 'poly' ? `0, 240, 255` : `255, 59, 48`;
+    chassis.style.boxShadow = `0 35px 80px rgba(0, 0, 0, 0.92), 0 0 ${24 + peak * 36}px rgba(${accent}, ${glowAlpha}), inset 0 1px 1px rgba(255, 255, 255, 0.16)`;
+    logo.style.transform = `scale(${1 + peak * 0.07})`;
+  } else {
+    chassis.style.boxShadow = `0 35px 80px rgba(0, 0, 0, 0.92), 0 0 24px rgba(0, 240, 255, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.16)`;
+    logo.style.transform = 'scale(1)';
+  }
+
+  const circ = 2 * Math.PI * 20.5;
   const arcLen = circ * 0.75;
-
   KnobRegistry.forEach(k => {
-    const p = k.param();
-    const modDelta = DSP.modOffsets[p];
-    if (modDelta && Math.abs(modDelta) > 0.002) {
-      const curVal = getParamByPath(p);
-      const baseNorm = valToNorm(curVal, k.min(), k.max(), k.curve());
-      const modNorm = Math.max(0, Math.min(1, baseNorm + modDelta));
-      const startNorm = Math.min(baseNorm, modNorm);
-      const spanNorm = Math.abs(modNorm - baseNorm);
-
-      k.modArc.setAttribute('opacity', '1');
-      k.modArc.setAttribute('stroke-dasharray', `${spanNorm * arcLen} ${circ}`);
-      k.modArc.setAttribute('transform', `rotate(${135 + startNorm * 270} 22 22)`);
+    const modDelta = DSP.modOffsets[k.param()];
+    if (modDelta && Math.abs(modDelta) > 0.005) {
+      const curNorm = valToNorm(getParamByPath(k.param()), k.min(), k.max(), k.curve());
+      const modNorm = Math.max(0, Math.min(1, curNorm + modDelta));
+      k.modArc.setAttribute('stroke-dasharray', `${modNorm * arcLen} ${circ}`);
+      k.modArc.setAttribute('opacity', '0.9');
     } else {
       k.modArc.setAttribute('opacity', '0');
     }
   });
-
-  const activeCount = DSP.voices.filter(v => v.active).length;
-  document.getElementById('voiceCounter').textContent = `${activeCount}/8`;
-  document.getElementById('voiceLed').classList.toggle('active-cyan', activeCount > 0);
 }
 
 function renderLoop() {
@@ -3823,81 +4199,70 @@ function renderLoop() {
   drawEnvelopeDisplay();
   drawLFODisplay();
   drawTopVisualizer();
-  updateModulationRingsAndTelemetry();
+  updateLiveTelemetry();
   requestAnimationFrame(renderLoop);
 }
 
 // ----------------------------------------------------------------------------
-// 9. 3-OCTAVE VIRTUAL KEYBOARD, QWERTY & WEB MIDI SUPPORT
+// 9. INTERACTIVE 3-OCTAVE PIANO KEYBOARD, QWERTY & WEB MIDI INPUT
 // ----------------------------------------------------------------------------
-function buildKeyboard() {
-  const dock = document.getElementById('pianoKeys');
-  dock.innerHTML = '';
+function buildPianoKeyboard() {
+  const container = document.getElementById('pianoKeys');
+  container.innerHTML = '';
   KeyElements.clear();
 
-  const startMidi = (SynthState.baseOctave + 1) * 12;
-  const numOctaves = 3;
-  const totalSemis = numOctaves * 12 + 1;
-  const isBlack = [false, true, false, true, false, false, true, false, true, false, true, false];
-
-  let whiteCount = 0;
-  for (let i = 0; i < totalSemis; i++) {
-    if (!isBlack[i % 12]) whiteCount++;
-  }
-
-  let currentWhite = 0;
-  let mouseDown = false;
-  window.addEventListener('mouseup', () => {
-    if (mouseDown) {
-      mouseDown = false;
-      Array.from(PhysicalHeldNotes).forEach(n => Perf.onPhysicalNoteOff(n));
-    }
-  });
-
-  for (let i = 0; i < totalSemis; i++) {
-    const midi = startMidi + i;
-    const semi = i % 12;
-    const oct = Math.floor(midi / 12) - 1;
-    const keyEl = document.createElement('div');
-
-    if (!isBlack[semi]) {
-      keyEl.className = 'key-white';
-      if (semi === 0) keyEl.textContent = `C${oct}`;
-      dock.appendChild(keyEl);
-      currentWhite++;
-    } else {
-      keyEl.className = 'key-black';
-      const leftPercent = ((currentWhite - 0.35) / whiteCount) * 100;
-      keyEl.style.left = leftPercent + '%';
-      dock.appendChild(keyEl);
-    }
-
-    keyEl.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      mouseDown = true;
-      Perf.onPhysicalNoteOn(midi, 0.85);
-    });
-    keyEl.addEventListener('mouseenter', () => {
-      if (mouseDown) {
-        Array.from(PhysicalHeldNotes).forEach(n => Perf.onPhysicalNoteOff(n));
-        Perf.onPhysicalNoteOn(midi, 0.85);
-      }
-    });
-    keyEl.addEventListener('mouseleave', () => {
-      if (mouseDown) Perf.onPhysicalNoteOff(midi);
-    });
-
-    KeyElements.set(midi, keyEl);
-  }
-
+  const baseMidi = (SynthState.baseOctave + 1) * 12;
   document.getElementById('octaveDisplay').textContent = `C${SynthState.baseOctave}`;
+
+  const whitePattern = [0, 2, 4, 5, 7, 9, 11];
+  const blackOffsets = { 0: 1, 1: 3, 3: 6, 4: 8, 5: 10 };
+  const qwertyWhite = ['A','S','D','F','G','H','J','K','L',';',"'"];
+  const qwertyBlack = { 0:'W', 1:'E', 3:'T', 4:'Y', 5:'U', 7:'O', 8:'P' };
+
+  let whiteIndex = 0;
+  const totalWhite = 21;
+
+  for (let oct = 0; oct < 3; oct++) {
+    for (let w = 0; w < 7; w++) {
+      const midiNote = baseMidi + oct * 12 + whitePattern[w];
+      const wKey = document.createElement('div');
+      wKey.className = 'key-white';
+      if (w === 0) wKey.textContent = `C${SynthState.baseOctave + oct}`;
+      else if (qwertyWhite[whiteIndex]) wKey.textContent = qwertyWhite[whiteIndex];
+
+      wKey.addEventListener('mousedown', (e) => { e.preventDefault(); Perf.onPhysicalNoteOn(midiNote, 0.85); });
+      wKey.addEventListener('mouseenter', (e) => { if (e.buttons === 1) Perf.onPhysicalNoteOn(midiNote, 0.85); });
+      wKey.addEventListener('mouseup', () => Perf.onPhysicalNoteOff(midiNote));
+      wKey.addEventListener('mouseleave', () => { if (PhysicalHeldNotes.has(midiNote)) Perf.onPhysicalNoteOff(midiNote); });
+
+      container.appendChild(wKey);
+      KeyElements.set(midiNote, wKey);
+
+      if (blackOffsets[w] !== undefined) {
+        const bMidi = baseMidi + oct * 12 + blackOffsets[w];
+        const bKey = document.createElement('div');
+        bKey.className = 'key-black';
+        const leftPct = ((whiteIndex + 0.68) / totalWhite) * 100;
+        bKey.style.left = leftPct + '%';
+        if (qwertyBlack[whiteIndex]) bKey.textContent = qwertyBlack[whiteIndex];
+
+        bKey.addEventListener('mousedown', (e) => { e.stopPropagation(); e.preventDefault(); Perf.onPhysicalNoteOn(bMidi, 0.9); });
+        bKey.addEventListener('mouseenter', (e) => { if (e.buttons === 1) Perf.onPhysicalNoteOn(bMidi, 0.9); });
+        bKey.addEventListener('mouseup', () => Perf.onPhysicalNoteOff(bMidi));
+        bKey.addEventListener('mouseleave', () => { if (PhysicalHeldNotes.has(bMidi)) Perf.onPhysicalNoteOff(bMidi); });
+
+        container.appendChild(bKey);
+        KeyElements.set(bMidi, bKey);
+      }
+      whiteIndex++;
+    }
+  }
 }
 
-const QWERTY_MAP = {
-  'KeyA': 0,  'KeyW': 1,  'KeyS': 2,  'KeyE': 3,  'KeyD': 4,
-  'KeyF': 5,  'KeyT': 6,  'KeyG': 7,  'KeyY': 8,  'KeyH': 9,
-  'KeyU': 10, 'KeyJ': 11, 'KeyK': 12, 'KeyO': 13, 'KeyL': 14,
-  'KeyP': 15, 'Semicolon': 16
+const KEY_MAP = {
+  'KeyA': 0, 'KeyW': 1, 'KeyS': 2, 'KeyE': 3, 'KeyD': 4, 'KeyF': 5,
+  'KeyT': 6, 'KeyG': 7, 'KeyY': 8, 'KeyH': 9, 'KeyU': 10, 'KeyJ': 11,
+  'KeyK': 12, 'KeyO': 13, 'KeyL': 14, 'KeyP': 15, 'Semicolon': 16, 'Quote': 17
 };
 
 window.addEventListener('keydown', (e) => {
@@ -3906,73 +4271,67 @@ window.addEventListener('keydown', (e) => {
   if (e.code === 'KeyZ') {
     SynthState.baseOctave = Math.max(1, SynthState.baseOctave - 1);
     Perf.panicAll();
-    buildKeyboard();
+    buildPianoKeyboard();
     return;
   }
   if (e.code === 'KeyX') {
-    SynthState.baseOctave = Math.min(5, SynthState.baseOctave + 1);
+    SynthState.baseOctave = Math.min(6, SynthState.baseOctave + 1);
     Perf.panicAll();
-    buildKeyboard();
+    buildPianoKeyboard();
     return;
   }
 
-  if (QWERTY_MAP.hasOwnProperty(e.code)) {
-    const startMidi = (SynthState.baseOctave + 1) * 12;
-    Perf.onPhysicalNoteOn(startMidi + QWERTY_MAP[e.code], 0.85);
+  if (KEY_MAP[e.code] !== undefined) {
+    const midiNote = (SynthState.baseOctave + 1) * 12 + KEY_MAP[e.code];
+    Perf.onPhysicalNoteOn(midiNote, 0.85);
   }
 });
 
 window.addEventListener('keyup', (e) => {
-  if (QWERTY_MAP.hasOwnProperty(e.code)) {
-    const startMidi = (SynthState.baseOctave + 1) * 12;
-    Perf.onPhysicalNoteOff(startMidi + QWERTY_MAP[e.code]);
+  if (KEY_MAP[e.code] !== undefined) {
+    const midiNote = (SynthState.baseOctave + 1) * 12 + KEY_MAP[e.code];
+    Perf.onPhysicalNoteOff(midiNote);
   }
 });
 
 function initWebMIDI() {
-  if (!navigator.requestMIDIAccess) {
-    document.getElementById('midiStatus').textContent = 'NO MIDI';
-    return;
-  }
-  navigator.requestMIDIAccess().then((midiAccess) => {
-    const updateDevices = () => {
-      const inputs = Array.from(midiAccess.inputs.values());
-      if (inputs.length > 0) {
-        document.getElementById('midiStatus').textContent = `${inputs[0].name.substring(0, 9).toUpperCase()}`;
-        document.getElementById('midiLed').classList.add('active-cyan');
-      } else {
-        document.getElementById('midiStatus').textContent = 'MIDI';
-        document.getElementById('midiLed').classList.remove('active-cyan');
-      }
-      inputs.forEach(input => {
+  if (!navigator.requestMIDIAccess) return;
+  navigator.requestMIDIAccess().then((midi) => {
+    const statusEl = document.getElementById('midiStatus');
+    const ledEl = document.getElementById('midiLed');
+
+    const bindInputs = () => {
+      let count = 0;
+      midi.inputs.forEach((input) => {
+        count++;
         input.onmidimessage = (msg) => {
           const [status, data1, data2] = msg.data;
           const cmd = status & 0xf0;
           if (cmd === 0x90 && data2 > 0) {
+            ledEl.classList.add('active-plasma');
             Perf.onPhysicalNoteOn(data1, data2 / 127);
           } else if (cmd === 0x80 || (cmd === 0x90 && data2 === 0)) {
+            ledEl.classList.remove('active-plasma');
             Perf.onPhysicalNoteOff(data1);
           }
         };
       });
+      statusEl.textContent = count > 0 ? `MIDI (${count})` : 'MIDI';
     };
-    updateDevices();
-    midiAccess.onstatechange = updateDevices;
-  }).catch(() => {
-    document.getElementById('midiStatus').textContent = 'MIDI OFF';
-  });
+
+    bindInputs();
+    midi.onstatechange = bindInputs;
+  }).catch(() => {});
 }
 
 // ----------------------------------------------------------------------------
-// 10. BOOTSTRAP SYNTHESIZER
+// 10. BOOTSTRAP APPLICATION
 // ----------------------------------------------------------------------------
-window.addEventListener('DOMContentLoaded', () => {
-  initAllKnobs();
-  setupControls();
-  buildKeyboard();
-  initWebMIDI();
-  requestAnimationFrame(renderLoop);
-});
+initAllKnobs();
+buildPianoKeyboard();
+setupControls();
+initWebMIDI();
+requestAnimationFrame(renderLoop);
 </script>
 </body>
 </html>
