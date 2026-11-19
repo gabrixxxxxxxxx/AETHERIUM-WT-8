@@ -1,0 +1,3097 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AETHERIUM WT-8 // Polyphonic Wavetable Synthesizer by slitex3K</title>
+<style>
+  :root {
+    --bg-chassis: #0f1115;
+    --bg-panel: #161920;
+    --bg-screen: #080a0d;
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border-dark: rgba(0, 0, 0, 0.85);
+    --cyan: #00f0ff;
+    --plasma: #ff3b30;
+    --amber: #ffaa00;
+    --purple: #b84dff;
+    --text-main: #e2e8f0;
+    --text-muted: #7b8494;
+    --font-ui: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-mono: 'Consolas', 'Monaco', monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: radial-gradient(circle at 50% 20%, #1d222c 0%, #090a0d 100%);
+    color: var(--text-main);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    overflow-x: auto;
+  }
+
+  /* Main VST Chassis */
+  .synth-chassis {
+    width: 1280px;
+    min-width: 1280px;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px),
+      linear-gradient(180deg, #1b1f27 0%, #12151b 100%);
+    border-radius: 14px;
+    border: 1px solid #2d3340;
+    box-shadow:
+      0 30px 70px rgba(0, 0, 0, 0.85),
+      inset 0 1px 1px rgba(255, 255, 255, 0.15),
+      inset 0 -2px 5px rgba(0, 0, 0, 0.8);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+
+  /* Top Header Bar */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, #1d212b 0%, #13161d 100%);
+    border: 1px solid var(--border-dark);
+    box-shadow: inset 0 1px 0 var(--border-light), 0 4px 10px rgba(0,0,0,0.4);
+    border-radius: 8px;
+    padding: 6px 14px;
+    height: 56px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    background: radial-gradient(circle at 30% 30%, var(--cyan), #0066ff);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.5), inset 0 1px 2px #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: #05070a;
+    font-size: 14px;
+  }
+
+  .brand-title {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    background: linear-gradient(90deg, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .brand-sub {
+    font-size: 9.5px;
+    color: var(--cyan);
+    font-family: var(--font-mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .preset-browser {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-screen);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #282e3b;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+  }
+
+  .preset-btn {
+    background: linear-gradient(180deg, #262b36, #191d24);
+    border: 1px solid #353c4b;
+    color: var(--text-main);
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.1s;
+  }
+
+  .preset-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  select.vst-select {
+    background: #0d1015;
+    color: var(--cyan);
+    border: 1px solid #262c3a;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+  }
+
+  select.vst-select:hover, select.vst-select:focus { border-color: var(--cyan); }
+
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #0b0d11;
+    border: 1px solid #222733;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .led {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #333;
+    transition: all 0.15s;
+  }
+  .led.active-cyan { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+
+  /* Top Right Visualizer & Master Area */
+  .top-right-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mini-scope-box {
+    background: var(--bg-screen);
+    border: 1px solid #262c3a;
+    border-radius: 5px;
+    padding: 2px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+    cursor: pointer;
+  }
+
+  canvas.mini-scope {
+    width: 150px;
+    height: 40px;
+    display: block;
+    border-radius: 3px;
+  }
+
+  /* Nav Tabs Bar */
+  .nav-tabs {
+    display: flex;
+    gap: 6px;
+    background: #11141b;
+    padding: 4px;
+    border-radius: 6px;
+    border: 1px solid #222836;
+  }
+
+  .nav-tab-btn {
+    flex: 1;
+    background: #171c26;
+    border: 1px solid #282f3e;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 7px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+
+  .nav-tab-btn:hover { color: var(--text-main); border-color: #3b455b; }
+  .nav-tab-btn.active {
+    background: linear-gradient(180deg, #252e3e, #181f2b);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+  }
+
+  /* View Containers */
+  .view-container { display: none; flex-direction: column; gap: 10px; }
+  .view-container.active { display: flex; }
+
+  /* Recessed Panel Styling */
+  .panel {
+    background: linear-gradient(180deg, #181c24 0%, #12151c 100%);
+    border-radius: 8px;
+    border: 1px solid #090b0e;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 3px 8px rgba(0, 0, 0, 0.45);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 5px;
+  }
+
+  .panel-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .power-toggle {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    border: 1px solid #384152;
+    background: #0d1015;
+    cursor: pointer;
+  }
+  .power-toggle.on {
+    background: var(--cyan);
+    border-color: #80f8ff;
+    box-shadow: 0 0 7px var(--cyan);
+  }
+  .power-toggle.on.plasma {
+    background: var(--plasma);
+    border-color: #ff8a80;
+    box-shadow: 0 0 7px var(--plasma);
+  }
+  .power-toggle.on.amber {
+    background: var(--amber);
+    border-color: #ffe082;
+    box-shadow: 0 0 7px var(--amber);
+  }
+
+  /* Grid Layouts */
+  .row-osc {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .row-sub-filt {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 10px;
+  }
+
+  .osc-body {
+    display: grid;
+    grid-template-columns: 195px 1fr;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .wt-screen-wrap {
+    background: var(--bg-screen);
+    border-radius: 6px;
+    border: 1px solid #262d3d;
+    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.95);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  canvas.wt-canvas {
+    width: 100%;
+    height: 110px;
+    border-radius: 4px;
+    display: block;
+    cursor: ew-resize;
+  }
+
+  .osc-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px 4px;
+    align-items: center;
+  }
+
+  /* Knob Component */
+  .knob-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    position: relative;
+  }
+
+  .knob-wrap {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    cursor: ns-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .knob-wrap.sm { width: 34px; height: 34px; }
+  .knob-wrap.lg { width: 52px; height: 52px; }
+
+  .knob-ring-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  .knob-cap {
+    width: 68%; height: 68%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #4b5568 0%, #232834 55%, #12151c 100%);
+    border: 1px solid #090b0e;
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    position: relative;
+    pointer-events: none;
+  }
+
+  .knob-indicator {
+    position: absolute;
+    top: 10%; left: 50%;
+    width: 2.5px; height: 36%;
+    background: #ffffff;
+    border-radius: 2px;
+    transform-origin: 50% 110%;
+    transform: translateX(-50%) rotate(0deg);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+  }
+
+  .knob-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .knob-val {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    color: var(--cyan);
+    height: 10px;
+    line-height: 10px;
+  }
+
+  /* Pill / Toggle Switches */
+  .pill-group {
+    display: flex;
+    background: #0b0d12;
+    border-radius: 4px;
+    padding: 2px;
+    border: 1px solid #242a38;
+  }
+
+  .pill-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .pill-btn.active {
+    background: #232a38;
+    color: var(--cyan);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .pill-btn.active.plasma { color: var(--plasma); }
+
+  .route-btn {
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 2px 5px;
+    border-radius: 3px;
+    border: 1px solid #2f3747;
+    background: #12151c;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .route-btn.active {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(0, 240, 255, 0.12);
+  }
+
+  /* Envelopes & LFO Section */
+  .env-lfo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .tab-bar { display: flex; gap: 4px; }
+  .tab-btn {
+    flex: 1;
+    background: #0e1117;
+    border: 1px solid #242a38;
+    color: var(--text-muted);
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 4px 0;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: linear-gradient(180deg, #222938, #161b24);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .tab-btn.lfo-tab.active { border-color: var(--plasma); color: var(--plasma); }
+
+  canvas.mod-canvas {
+    width: 100%;
+    height: 96px;
+    background: var(--bg-screen);
+    border-radius: 5px;
+    border: 1px solid #242b3a;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.9);
+    display: block;
+    cursor: crosshair;
+  }
+
+  /* FX Rack Grid (3x2 = 6 FX Modules) */
+  .fx-rack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .fx-card {
+    background: #101319;
+    border: 1px solid #222836;
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .fx-card.highlight-crusher {
+    border-color: rgba(255, 170, 0, 0.35);
+    box-shadow: inset 0 0 15px rgba(255, 170, 0, 0.04);
+  }
+
+  .fx-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #cbd5e1;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 5px;
+  }
+
+  /* Modulation Matrix */
+  .matrix-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 390px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .matrix-list::-webkit-scrollbar { width: 5px; }
+  .matrix-list::-webkit-scrollbar-thumb { background: #2e3646; border-radius: 3px; }
+
+  .matrix-row {
+    display: grid;
+    grid-template-columns: 24px 1fr 20px 1fr 110px;
+    align-items: center;
+    gap: 8px;
+    background: #0e1117;
+    border: 1px solid #1f2532;
+    padding: 5px 8px;
+    border-radius: 4px;
+  }
+  .matrix-idx { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); text-align: center; }
+  .matrix-arrow { color: var(--cyan); font-size: 11px; text-align: center; }
+  .matrix-select {
+    background: #151922; color: #e2e8f0;
+    border: 1px solid #2a3140; border-radius: 3px;
+    font-size: 10.5px; padding: 3px 6px; outline: none; width: 100%;
+  }
+  .bipolar-wrap { display: flex; align-items: center; gap: 6px; }
+  input[type="range"].bipolar-slider {
+    -webkit-appearance: none; width: 68px; height: 4px; background: #252c3a; border-radius: 2px; outline: none;
+  }
+  input[type="range"].bipolar-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: var(--cyan); cursor: pointer; box-shadow: 0 0 6px var(--cyan);
+  }
+  .bipolar-val { font-family: var(--font-mono); font-size: 9.5px; color: var(--cyan); width: 30px; text-align: right; }
+
+  /* Info Tab Card */
+  .info-card {
+    background: #11141c;
+    border: 1px solid #242c3d;
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #cbd5e1;
+  }
+  .info-card h2 { color: var(--cyan); font-size: 20px; letter-spacing: 1px; }
+  .info-card h3 { color: var(--amber); font-size: 14px; margin-top: 6px; }
+  .info-card ul { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+
+  /* 3-Octave Realistic Keyboard */
+  .keyboard-dock {
+    background: linear-gradient(180deg, #0d0f14 0%, #161922 100%);
+    border-radius: 8px;
+    border: 1px solid #07080b;
+    padding: 8px 12px 10px 12px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .kb-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .piano-keys {
+    position: relative;
+    height: 92px;
+    width: 100%;
+    display: flex;
+    background: #050608;
+    border-radius: 4px;
+    padding: 2px;
+    box-shadow: inset 0 3px 8px rgba(0,0,0,1);
+  }
+
+  .key-white {
+    flex: 1; height: 100%;
+    background: linear-gradient(180deg, #e2e8f0 0%, #ffffff 15%, #f1f5f9 88%, #cbd5e1 100%);
+    border: 1px solid #1e2430; border-radius: 0 0 5px 5px; margin: 0 1px;
+    position: relative; cursor: pointer;
+    box-shadow: 0 3px 4px rgba(0,0,0,0.6), inset 0 -3px 0 #94a3b8;
+    display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px;
+    font-size: 9px; font-weight: 700; color: #64748b;
+  }
+  .key-white.active {
+    background: linear-gradient(180deg, #bae6fd 0%, #7dd3fc 60%, #38bdf8 100%);
+    transform: translateY(2px);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 12px rgba(0, 240, 255, 0.6);
+    color: #0f172a;
+  }
+
+  .key-black {
+    position: absolute; top: 2px; width: 2.65%; height: 58%;
+    background: linear-gradient(180deg, #333b48 0%, #181c24 85%, #0c0e12 100%);
+    border: 1px solid #050608; border-radius: 0 0 4px 4px; z-index: 2; cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.2), inset 0 -4px 0 #090b0f;
+    display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px;
+    font-size: 8px; color: #64748b;
+  }
+  .key-black.active {
+    background: linear-gradient(180deg, #ff6b6b 0%, #ff3b30 85%, #b91c1c 100%);
+    transform: translateY(2px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 12px rgba(255, 59, 48, 0.7);
+    color: #fff;
+  }
+
+  .floating-tooltip {
+    position: fixed; pointer-events: none; background: rgba(8, 10, 14, 0.95);
+    border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-mono);
+    font-size: 11px; font-weight: bold; padding: 3px 7px; border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.8); z-index: 9999; display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="floating-tooltip" id="tooltip"></div>
+
+<div class="synth-chassis" id="synthApp">
+  <!-- TOP HEADER -->
+  <header class="top-bar">
+    <div class="brand">
+      <div class="brand-logo">WT8</div>
+      <div>
+        <div class="brand-title">AETHERIUM WT-8</div>
+        <div class="brand-sub">Polyphonic Wavetable Workstation</div>
+      </div>
+    </div>
+
+    <div class="preset-browser">
+      <button class="preset-btn" id="prevPreset" title="Previous Preset">&lt;</button>
+      <select class="vst-select" id="presetSelect" style="width: 210px;"></select>
+      <button class="preset-btn" id="nextPreset" title="Next Preset">&gt;</button>
+      <button class="preset-btn" id="initPresetBtn" title="Init Patch" style="width:auto; padding:0 8px; font-size:10px;">INIT</button>
+    </div>
+
+    <div class="top-right-control">
+      <div class="status-pill">
+        <span>BPM</span>
+        <input type="number" id="bpmInput" value="128" min="40" max="240" style="width:38px; background:transparent; border:none; color:var(--cyan); font-family:var(--font-mono); font-weight:bold; outline:none;">
+      </div>
+      <div class="status-pill">
+        <div class="led" id="voiceLed"></div>
+        <span id="voiceCounter">0/8</span>
+      </div>
+      <div class="status-pill">
+        <div class="led" id="midiLed"></div>
+        <span id="midiStatus">MIDI</span>
+      </div>
+      <div class="mini-scope-box" id="scopeModeBox" title="Click to toggle Scope / FFT">
+        <canvas class="mini-scope" id="topScopeCanvas" width="150" height="40"></canvas>
+      </div>
+      <div class="knob-unit" data-size="sm" data-param="master.glide" data-min="0" data-max="0.5" data-default="0.0" data-label="GLIDE" data-unit="s"></div>
+      <div class="knob-unit" data-size="sm" data-param="master.gain" data-min="0" data-max="1.2" data-default="0.75" data-label="MASTER" data-unit="%"></div>
+      <button class="route-btn" id="panicBtn" style="border-color:var(--plasma); color:var(--plasma); padding:4px 8px;">PANIC</button>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="nav-tabs">
+    <button class="nav-tab-btn active" data-tab="synth">SYNTH / MAIN</button>
+    <button class="nav-tab-btn" data-tab="fx">FX RACK (6 UNITS)</button>
+    <button class="nav-tab-btn" data-tab="matrix">MODULATION MATRIX</button>
+    <button class="nav-tab-btn" data-tab="info">INFO / CREDITS</button>
+  </nav>
+
+  <!-- TAB 1: SYNTH / MAIN -->
+  <div class="view-container active" id="view-synth">
+    <div class="row-osc">
+      <!-- OSCILLATOR A -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="power-toggle on" data-toggle="oscA.on"></div>
+            <span>OSC A // WAVETABLE</span>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <select class="vst-select" id="oscA_table" style="font-size:10px; padding:2px 5px;"></select>
+            <button class="route-btn active" data-route="oscA.toFilter">FLT</button>
+          </div>
+        </div>
+        <div class="osc-body">
+          <div class="wt-screen-wrap">
+            <canvas class="wt-canvas" id="canvasOscA" width="185" height="110"></canvas>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:8.5px; color:var(--text-muted); font-weight:700;">WARP</span>
+              <select class="vst-select" id="oscA_warpMode" style="font-size:9px; padding:1px 4px; width:130px;">
+                <option value="none">Off</option>
+                <option value="sync">Hard Sync</option>
+                <option value="bendPlus">Bend +</option>
+                <option value="bendMinus">Bend -</option>
+                <option value="pwm">PWM Squeeze</option>
+                <option value="fold">Asym Fold</option>
+                <option value="fmFromB">FM (from Osc B)</option>
+                <option value="rmFromB">RM (from Osc B)</option>
+              </select>
+            </div>
+          </div>
+          <div class="osc-controls-grid">
+            <div class="knob-unit" data-param="oscA.wtPos" data-min="0" data-max="1" data-default="0.15" data-label="WT POS" data-unit="%"></div>
+            <div class="knob-unit" data-param="oscA.warpAmt" data-min="0" data-max="1" data-default="0" data-label="WARP" data-unit="%"></div>
+            <div class="knob-unit" data-param="oscA.unison" data-min="1" data-max="7" data-step="1" data-default="1" data-label="UNISON" data-unit="v"></div>
+            <div class="knob-unit" data-param="oscA.detune" data-min="0" data-max="1" data-default="0.22" data-label="DETUNE" data-unit="%"></div>
+            <div class="knob-unit" data-param="oscA.octave" data-min="-3" data-max="3" data-step="1" data-default="0" data-label="OCT" data-unit="oct"></div>
+            <div class="knob-unit" data-param="oscA.semi" data-min="-12" data-max="12" data-step="1" data-default="0" data-label="SEMI" data-unit="st"></div>
+            <div class="knob-unit" data-param="oscA.pan" data-min="-1" data-max="1" data-default="0" data-label="PAN" data-unit="pan"></div>
+            <div class="knob-unit" data-param="oscA.level" data-min="0" data-max="1" data-default="0.8" data-label="LEVEL" data-unit="%"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- OSCILLATOR B -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="power-toggle on" data-toggle="oscB.on"></div>
+            <span>OSC B // WAVETABLE</span>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <select class="vst-select" id="oscB_table" style="font-size:10px; padding:2px 5px;"></select>
+            <button class="route-btn active" data-route="oscB.toFilter">FLT</button>
+          </div>
+        </div>
+        <div class="osc-body">
+          <div class="wt-screen-wrap">
+            <canvas class="wt-canvas" id="canvasOscB" width="185" height="110"></canvas>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:8.5px; color:var(--text-muted); font-weight:700;">WARP</span>
+              <select class="vst-select" id="oscB_warpMode" style="font-size:9px; padding:1px 4px; width:130px;">
+                <option value="none">Off</option>
+                <option value="sync">Hard Sync</option>
+                <option value="bendPlus">Bend +</option>
+                <option value="bendMinus">Bend -</option>
+                <option value="pwm">PWM Squeeze</option>
+                <option value="fold">Asym Fold</option>
+              </select>
+            </div>
+          </div>
+          <div class="osc-controls-grid">
+            <div class="knob-unit" data-param="oscB.wtPos" data-min="0" data-max="1" data-default="0.4" data-label="WT POS" data-unit="%"></div>
+            <div class="knob-unit" data-param="oscB.warpAmt" data-min="0" data-max="1" data-default="0" data-label="WARP" data-unit="%"></div>
+            <div class="knob-unit" data-param="oscB.unison" data-min="1" data-max="7" data-step="1" data-default="1" data-label="UNISON" data-unit="v"></div>
+            <div class="knob-unit" data-param="oscB.detune" data-min="0" data-max="1" data-default="0.25" data-label="DETUNE" data-unit="%"></div>
+            <div class="knob-unit" data-param="oscB.octave" data-min="-3" data-max="3" data-step="1" data-default="0" data-label="OCT" data-unit="oct"></div>
+            <div class="knob-unit" data-param="oscB.semi" data-min="-12" data-max="12" data-step="1" data-default="0" data-label="SEMI" data-unit="st"></div>
+            <div class="knob-unit" data-param="oscB.pan" data-min="-1" data-max="1" data-default="0" data-label="PAN" data-unit="pan"></div>
+            <div class="knob-unit" data-param="oscB.level" data-min="0" data-max="1" data-default="0.0" data-label="LEVEL" data-unit="%"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="row-sub-filt">
+      <!-- SUB & NOISE -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><span>SUB &amp; NOISE GENERATOR</span></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <!-- SUB -->
+          <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:6px; display:flex; flex-direction:column; gap:5px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div class="panel-title" style="font-size:9.5px;">
+                <div class="power-toggle on" data-toggle="sub.on"></div>
+                <span>SUB OSC</span>
+              </div>
+              <div class="pill-group" data-pills="sub.shape">
+                <button class="pill-btn active" data-val="sine">SIN</button>
+                <button class="pill-btn" data-val="triangle">TRI</button>
+                <button class="pill-btn" data-val="square">SQR</button>
+              </div>
+              <button class="route-btn" data-route="sub.toFilter">FLT</button>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-around;">
+              <div class="pill-group" data-pills="sub.octave">
+                <button class="pill-btn active" data-val="-1">-1 OCT</button>
+                <button class="pill-btn" data-val="-2">-2 OCT</button>
+              </div>
+              <div class="knob-unit" data-size="sm" data-param="sub.level" data-min="0" data-max="1" data-default="0.35" data-label="LEVEL" data-unit="%"></div>
+            </div>
+          </div>
+          <!-- NOISE -->
+          <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:6px; display:flex; flex-direction:column; gap:5px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div class="panel-title" style="font-size:9.5px;">
+                <div class="power-toggle" data-toggle="noise.on"></div>
+                <span>NOISE</span>
+              </div>
+              <div class="pill-group" data-pills="noise.color">
+                <button class="pill-btn active" data-val="white">WHT</button>
+                <button class="pill-btn" data-val="pink">PNK</button>
+                <button class="pill-btn" data-val="crackle">CRK</button>
+              </div>
+              <button class="route-btn active" data-route="noise.toFilter">FLT</button>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-around;">
+              <div class="knob-unit" data-size="sm" data-param="noise.cutoff" data-min="100" data-max="18000" data-curve="exp" data-default="4500" data-label="COLOR" data-unit="Hz"></div>
+              <div class="knob-unit" data-size="sm" data-param="noise.level" data-min="0" data-max="1" data-default="0.25" data-label="LEVEL" data-unit="%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MULTIMODE FILTER (EXPANDED WITH VOWEL FORMANT, BP24 & RESONANT COMB) -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="power-toggle on plasma" data-toggle="filter.on"></div>
+            <span>MULTIMODE FILTER ENGINE</span>
+          </div>
+          <select class="vst-select" id="filter_type" style="font-size:10px; padding:2px 6px; color:var(--plasma);">
+            <option value="lp12">Lowpass 12dB</option>
+            <option value="lp24" selected>Lowpass 24dB</option>
+            <option value="hp12">Highpass 12dB</option>
+            <option value="hp24">Highpass 24dB</option>
+            <option value="bp12">Bandpass 12dB</option>
+            <option value="bp24">Bandpass 24dB</option>
+            <option value="notch">Notch Filter</option>
+            <option value="comb">Resonant Comb</option>
+            <option value="formant">Vowel Formant (A-E-I-O-U)</option>
+          </select>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding-top: 8px; align-items:center;">
+          <div class="knob-unit" data-size="lg" data-color="plasma" data-param="filter.cutoff" data-min="20" data-max="20000" data-curve="exp" data-default="2400" data-label="CUTOFF / VWL" data-unit="Hz"></div>
+          <div class="knob-unit" data-size="lg" data-color="plasma" data-param="filter.reso" data-min="0" data-max="1" data-default="0.25" data-label="RESONANCE" data-unit="%"></div>
+          <div class="knob-unit" data-size="lg" data-color="plasma" data-param="filter.drive" data-min="0" data-max="1" data-default="0.15" data-label="PRE DRIVE" data-unit="%"></div>
+          <div class="knob-unit" data-color="plasma" data-param="filter.fat" data-min="0" data-max="1" data-default="0.2" data-label="FAT BOOST" data-unit="%"></div>
+          <div class="knob-unit" data-color="plasma" data-param="filter.keytrack" data-min="0" data-max="1" data-default="0.3" data-label="KEYTRACK" data-unit="%"></div>
+          <div class="knob-unit" data-color="plasma" data-param="filter.mix" data-min="0" data-max="1" data-default="1" data-label="DRY/WET" data-unit="%"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ENVELOPES & LFOS -->
+    <div class="env-lfo-grid">
+      <section class="panel">
+        <div class="panel-header">
+          <div class="tab-bar" style="width:100%;">
+            <button class="tab-btn active" data-modtab="env1">ENV 1 (AMP)</button>
+            <button class="tab-btn" data-modtab="env2">ENV 2</button>
+            <button class="tab-btn" data-modtab="env3">ENV 3</button>
+          </div>
+        </div>
+        <canvas class="mod-canvas" id="envCanvas" width="580" height="96"></canvas>
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+          <div class="knob-unit" data-size="sm" id="envKnobA" data-param="env1.a" data-min="0.002" data-max="4" data-curve="exp" data-default="0.015" data-label="ATTACK" data-unit="s"></div>
+          <div class="knob-unit" data-size="sm" id="envKnobD" data-param="env1.d" data-min="0.01" data-max="5" data-curve="exp" data-default="0.45" data-label="DECAY" data-unit="s"></div>
+          <div class="knob-unit" data-size="sm" id="envKnobS" data-param="env1.s" data-min="0" data-max="1" data-default="0.65" data-label="SUSTAIN" data-unit="%"></div>
+          <div class="knob-unit" data-size="sm" id="envKnobR" data-param="env1.r" data-min="0.01" data-max="6" data-curve="exp" data-default="0.35" data-label="RELEASE" data-unit="s"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div class="tab-bar" style="width:100%;">
+            <button class="tab-btn lfo-tab active" data-modtab="lfo1">LFO 1</button>
+            <button class="tab-btn lfo-tab" data-modtab="lfo2">LFO 2</button>
+          </div>
+        </div>
+        <canvas class="mod-canvas" id="lfoCanvas" width="580" height="96"></canvas>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; padding-top:4px;">
+          <div class="pill-group" id="lfoShapePills">
+            <button class="pill-btn active plasma" data-lfoshape="sine">SIN</button>
+            <button class="pill-btn plasma" data-lfoshape="triangle">TRI</button>
+            <button class="pill-btn plasma" data-lfoshape="saw">SAW</button>
+            <button class="pill-btn plasma" data-lfoshape="square">SQR</button>
+            <button class="pill-btn plasma" data-lfoshape="sh">S&amp;H</button>
+          </div>
+          <div class="pill-group" id="lfoSyncPills">
+            <button class="pill-btn active plasma" data-lfosync="hz">HZ</button>
+            <button class="pill-btn plasma" data-lfosync="sync">SYNC</button>
+          </div>
+          <div class="knob-unit" data-size="sm" data-color="plasma" id="lfoKnobRate" data-param="lfo1.rate" data-min="0.05" data-max="30" data-curve="exp" data-default="2.0" data-label="RATE" data-unit="Hz"></div>
+          <div class="knob-unit" data-size="sm" data-color="plasma" id="lfoKnobPhase" data-param="lfo1.phase" data-min="0" data-max="1" data-default="0" data-label="PHASE" data-unit="%"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- TAB 2: FX RACK (6 MODULES INCLUDING ADVANCED BITCRUSHER & STEREO PHASER) -->
+  <div class="view-container" id="view-fx">
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><span>MASTER FX RACK CHAIN (6 SERIAL MODULES)</span></div>
+        <span style="font-size:9.5px; color:var(--text-muted); font-family:var(--font-mono);">HYPER &rarr; PHASER &rarr; BITCRUSHER &rarr; DISTORTION &rarr; DELAY &rarr; REVERB</span>
+      </div>
+      <div class="fx-rack-grid">
+        <!-- 1. HYPER / DIMENSION -->
+        <div class="fx-card">
+          <div class="fx-card-head">
+            <span>1. HYPER / DIMENSION</span>
+            <div class="power-toggle on" data-toggle="fx.hyper.on"></div>
+          </div>
+          <div style="display:flex; justify-content:space-around; padding-top:6px;">
+            <div class="knob-unit" data-param="fx.hyper.detune" data-min="0" data-max="1" data-default="0.35" data-label="DETUNE" data-unit="%"></div>
+            <div class="knob-unit" data-param="fx.hyper.mix" data-min="0" data-max="1" data-default="0.25" data-label="MIX" data-unit="%"></div>
+          </div>
+        </div>
+
+        <!-- 2. STEREO PHASER -->
+        <div class="fx-card">
+          <div class="fx-card-head">
+            <span>2. STEREO PHASER</span>
+            <div class="power-toggle" data-toggle="fx.phaser.on"></div>
+          </div>
+          <div style="display:flex; justify-content:space-around; padding-top:6px;">
+            <div class="knob-unit" data-param="fx.phaser.rate" data-min="0.05" data-max="8" data-curve="exp" data-default="0.6" data-label="RATE" data-unit="Hz"></div>
+            <div class="knob-unit" data-param="fx.phaser.fb" data-min="0" data-max="0.85" data-default="0.5" data-label="FEEDBACK" data-unit="%"></div>
+            <div class="knob-unit" data-param="fx.phaser.mix" data-min="0" data-max="1" data-default="0.45" data-label="MIX" data-unit="%"></div>
+          </div>
+        </div>
+
+        <!-- 3. ADVANCED BITCRUSHER -->
+        <div class="fx-card highlight-crusher">
+          <div class="fx-card-head">
+            <span style="color:var(--amber);">3. ADVANCED BITCRUSHER</span>
+            <div class="power-toggle amber" data-toggle="fx.crusher.on"></div>
+          </div>
+          <div style="display:flex; justify-content:space-around; padding-top:6px;">
+            <div class="knob-unit" data-color="plasma" data-param="fx.crusher.bits" data-min="2" data-max="16" data-step="1" data-default="8" data-label="BIT DEPTH" data-unit="bit"></div>
+            <div class="knob-unit" data-color="plasma" data-param="fx.crusher.downsample" data-min="1" data-max="40" data-step="1" data-default="6" data-label="SR REDUCE" data-unit="x"></div>
+            <div class="knob-unit" data-color="plasma" data-param="fx.crusher.jitter" data-min="0" data-max="1" data-default="0.15" data-label="JITTER" data-unit="%"></div>
+            <div class="knob-unit" data-color="plasma" data-param="fx.crusher.mix" data-min="0" data-max="1" data-default="0.65" data-label="MIX" data-unit="%"></div>
+          </div>
+        </div>
+
+        <!-- 4. DISTORTION -->
+        <div class="fx-card">
+          <div class="fx-card-head">
+            <span>4. ANALOG DISTORTION</span>
+            <div class="power-toggle" data-toggle="fx.dist.on"></div>
+          </div>
+          <select class="vst-select" id="fx_dist_mode" style="font-size:10px; padding:2px 4px;">
+            <option value="tube">Tube Warm Saturation</option>
+            <option value="hard">Hard Clip Limiter</option>
+            <option value="diode">Diode Asym Fuzz</option>
+            <option value="foldback">Wavefold Saturator</option>
+          </select>
+          <div style="display:flex; justify-content:space-around;">
+            <div class="knob-unit" data-color="plasma" data-param="fx.dist.drive" data-min="0" data-max="1" data-default="0.4" data-label="DRIVE" data-unit="%"></div>
+            <div class="knob-unit" data-color="plasma" data-param="fx.dist.mix" data-min="0" data-max="1" data-default="0.5" data-label="MIX" data-unit="%"></div>
+          </div>
+        </div>
+
+        <!-- 5. DELAY -->
+        <div class="fx-card">
+          <div class="fx-card-head">
+            <span>5. PING-PONG DELAY</span>
+            <div class="power-toggle" data-toggle="fx.delay.on"></div>
+          </div>
+          <div style="display:flex; justify-content:space-around; padding-top:6px;">
+            <div class="knob-unit" data-param="fx.delay.time" data-min="0.05" data-max="1.0" data-default="0.375" data-label="TIME" data-unit="s"></div>
+            <div class="knob-unit" data-param="fx.delay.fb" data-min="0" data-max="0.88" data-default="0.42" data-label="FEEDBACK" data-unit="%"></div>
+            <div class="knob-unit" data-param="fx.delay.mix" data-min="0" data-max="1" data-default="0.3" data-label="MIX" data-unit="%"></div>
+          </div>
+        </div>
+
+        <!-- 6. REVERB -->
+        <div class="fx-card">
+          <div class="fx-card-head">
+            <span>6. ALGORITHMIC REVERB</span>
+            <div class="power-toggle on" data-toggle="fx.reverb.on"></div>
+          </div>
+          <div style="display:flex; justify-content:space-around; padding-top:6px;">
+            <div class="knob-unit" data-param="fx.reverb.size" data-min="0.1" data-max="1" data-default="0.55" data-label="ROOM SIZE" data-unit="%"></div>
+            <div class="knob-unit" data-param="fx.reverb.damp" data-min="500" data-max="14000" data-curve="exp" data-default="5500" data-label="DAMPING" data-unit="Hz"></div>
+            <div class="knob-unit" data-param="fx.reverb.mix" data-min="0" data-max="1" data-default="0.22" data-label="MIX" data-unit="%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- TAB 3: MODULATION MATRIX -->
+  <div class="view-container" id="view-matrix">
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><span>8-SLOT MODULATION ROUTING MATRIX</span></div>
+        <button class="route-btn" id="clearMatrixBtn">CLEAR ALL</button>
+      </div>
+      <div class="matrix-list" id="matrixContainer"></div>
+    </section>
+  </div>
+
+  <!-- TAB 4: INFO / CREDITS -->
+  <div class="view-container" id="view-info">
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><span>ABOUT AETHERIUM WT-8</span></div>
+      </div>
+      <div class="info-card">
+        <h2>AETHERIUM WT-8 // Polyphonic Wavetable Synthesizer</h2>
+        <p>Creato interamente da <b>slitex3K</b> con l'ausilio di un'Intelligenza Artificiale avanzata. Un sintetizzatore Wavetable polifonico nativo ad alte prestazioni scritto in puro JavaScript ES6+ e Web Audio API, racchiuso in un singolo file senza alcuna libreria o dipendenza esterna.</p>
+        
+        <h3>ARCHITETTURA AUDIO &amp; DSP</h3>
+        <ul>
+          <li><b>Motore Wavetable Polifonico a 8 Voci:</b> Gestione intelligente del voice-stealing, Unison stereo fino a 7 voci per oscillatore e filtro <b>DC Blocker (Highpass 10Hz)</b> integrato nello stadio Master per eliminare qualsiasi offset DC.</li>
+          <li><b>Oscillatori A &amp; B + Sub + Noise:</b> 6 banchi Wavetable procedurali da 64 frame (Basic Shapes, Digital Growl, Acid/PWM, FM Harmonics, Vocal Formant, Metallic Chaos), algoritmi di Warp in tempo reale (Hard Sync, Bend +/-, PWM, Asym Fold, FM &amp; RM da Osc B).</li>
+          <li><b>Filtri Multimodali &amp; Formant:</b> Lowpass 12/24dB, Highpass 12/24dB, Bandpass 12/24dB, Notch, Resonant Comb e Vowel Formant (A-E-I-O-U) con Pre-Drive e Fat Boost sub-armonico.</li>
+          <li><b>Rack FX Seriale a 6 Moduli:</b> Hyper/Dimension Chorus, Stereo Phaser, Advanced Bitcrusher (Bit Depth, Sample Rate Reduction, Jitter), Analog Distortion, Ping-Pong Delay e Schroeder Algorithmic Reverb.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- KEYBOARD DOCK -->
+  <div class="keyboard-dock">
+    <div class="kb-controls">
+      <div>QWERTY: <b>[A W S E D F T G Y H U J K O L P]</b> &bull; OCTAVE DOWN/UP: <b>[Z] / [X]</b></div>
+      <div>BASE OCTAVE: <span id="octaveDisplay" style="color:var(--cyan); font-weight:bold;">C3</span> &bull; WEB MIDI PLUG &amp; PLAY READY</div>
+    </div>
+    <div class="piano-keys" id="pianoKeys"></div>
+  </div>
+</div>
+
+<script>
+/**
+ * ============================================================================
+ * AETHERIUM WT-8 // POLYPHONIC WAVETABLE SYNTHESIZER ENGINE (by slitex3K)
+ * Pure Web Audio API + ES6 + HTML5 Canvas (Zero External Dependencies)
+ * ============================================================================
+ */
+
+// ----------------------------------------------------------------------------
+// 1. STATE & PARAMETER ARCHITECTURE
+// ----------------------------------------------------------------------------
+const SynthState = {
+  bpm: 128,
+  baseOctave: 3,
+  activeModTab: 'env1',
+  scopeMode: 'both',
+
+  oscA: {
+    on: true, table: 'Basic Shapes', wtPos: 0.15, warpMode: 'none', warpAmt: 0,
+    unison: 1, detune: 0.22, octave: 0, semi: 0, pan: 0, level: 0.8, toFilter: true
+  },
+  oscB: {
+    on: true, table: 'Digital Growl', wtPos: 0.4, warpMode: 'none', warpAmt: 0,
+    unison: 1, detune: 0.25, octave: 0, semi: 0, pan: 0, level: 0.0, toFilter: true
+  },
+  sub: {
+    on: true, shape: 'sine', octave: -1, level: 0.35, toFilter: false
+  },
+  noise: {
+    on: false, color: 'white', cutoff: 4500, level: 0.25, toFilter: true
+  },
+  filter: {
+    on: true, type: 'lp24', cutoff: 2400, reso: 0.25, drive: 0.15, fat: 0.2, keytrack: 0.3, mix: 1.0
+  },
+  env1: { a: 0.015, d: 0.45, s: 0.65, r: 0.35 },
+  env2: { a: 0.01,  d: 0.35, s: 0.0,  r: 0.25 },
+  env3: { a: 0.25,  d: 0.8,  s: 0.5,  r: 0.6  },
+  lfo1: { shape: 'sine', sync: 'hz', rate: 2.0, phase: 0 },
+  lfo2: { shape: 'triangle', sync: 'sync', rate: 4.0, phase: 0 },
+
+  matrix: [
+    { src: 'env2', dst: 'filter.cutoff', amt: 0.35 },
+    { src: 'lfo1', dst: 'oscA.wtPos', amt: 0.0 },
+    { src: 'none', dst: 'none', amt: 0.0 },
+    { src: 'none', dst: 'none', amt: 0.0 },
+    { src: 'none', dst: 'none', amt: 0.0 },
+    { src: 'none', dst: 'none', amt: 0.0 },
+    { src: 'none', dst: 'none', amt: 0.0 },
+    { src: 'none', dst: 'none', amt: 0.0 }
+  ],
+
+  fx: {
+    hyper:   { on: true,  detune: 0.35, mix: 0.25 },
+    phaser:  { on: false, rate: 0.6, fb: 0.5, mix: 0.45 },
+    crusher: { on: false, bits: 8, downsample: 6, jitter: 0.15, mix: 0.65 },
+    dist:    { on: false, mode: 'tube', drive: 0.4, mix: 0.5 },
+    delay:   { on: false, time: 0.375, fb: 0.42, mix: 0.3 },
+    reverb:  { on: true,  size: 0.55, damp: 5500, mix: 0.22 }
+  },
+
+  master: {
+    glide: 0.0,
+    gain: 0.75
+  }
+};
+
+const MOD_SOURCES = [
+  { id: 'none', name: '-- Off --' },
+  { id: 'env1', name: 'Env 1 (Amp)' },
+  { id: 'env2', name: 'Env 2' },
+  { id: 'env3', name: 'Env 3' },
+  { id: 'lfo1', name: 'LFO 1' },
+  { id: 'lfo2', name: 'LFO 2' },
+  { id: 'vel',  name: 'Velocity' }
+];
+
+const MOD_DESTINATIONS = [
+  { id: 'none', name: '-- None --', min: 0, max: 0 },
+  { id: 'filter.cutoff', name: 'Filter Cutoff', min: 20, max: 20000, exp: true },
+  { id: 'filter.reso',   name: 'Filter Reso',   min: 0, max: 1 },
+  { id: 'filter.drive',  name: 'Filter Drive',  min: 0, max: 1 },
+  { id: 'oscA.wtPos',    name: 'Osc A WT Pos',  min: 0, max: 1 },
+  { id: 'oscA.warpAmt',  name: 'Osc A Warp',    min: 0, max: 1 },
+  { id: 'oscA.pitch',    name: 'Osc A Pitch (±24st)', min: -24, max: 24 },
+  { id: 'oscA.level',    name: 'Osc A Level',   min: 0, max: 1 },
+  { id: 'oscB.wtPos',    name: 'Osc B WT Pos',  min: 0, max: 1 },
+  { id: 'oscB.warpAmt',  name: 'Osc B Warp',    min: 0, max: 1 },
+  { id: 'oscB.pitch',    name: 'Osc B Pitch (±24st)', min: -24, max: 24 },
+  { id: 'oscB.level',    name: 'Osc B Level',   min: 0, max: 1 },
+  { id: 'global.pitch',  name: 'Master Pitch (±12st)', min: -12, max: 12 },
+  { id: 'fx.dist.drive', name: 'Distortion Drive', min: 0, max: 1 },
+  { id: 'fx.crusher.downsample', name: 'Bitcrusher SR Reduce', min: 1, max: 40 }
+];
+
+function getParamByPath(path) {
+  const parts = path.split('.');
+  let obj = SynthState;
+  for (let p of parts) {
+    if (obj === undefined) return undefined;
+    obj = obj[p];
+  }
+  return obj;
+}
+
+function setParamByPath(path, val) {
+  const parts = path.split('.');
+  let obj = SynthState;
+  for (let i = 0; i < parts.length - 1; i++) {
+    obj = obj[parts[i]];
+  }
+  obj[parts[parts.length - 1]] = val;
+}
+
+// ----------------------------------------------------------------------------
+// 2. PROCEDURAL MULTI-FRAME WAVETABLE GENERATOR (64 FRAMES x 1024 SAMPLES)
+// ----------------------------------------------------------------------------
+const WT_FRAMES = 64;
+const WT_SIZE = 1024;
+const WavetableBank = {};
+
+function normalizeFrame(arr) {
+  let max = 0;
+  for (let i = 0; i < arr.length; i++) {
+    const a = Math.abs(arr[i]);
+    if (a > max) max = a;
+  }
+  if (max > 0.0001) {
+    for (let i = 0; i < arr.length; i++) arr[i] /= max;
+  }
+  return arr;
+}
+
+function buildWavetables() {
+  const names = [
+    'Basic Shapes',
+    'Digital Growl',
+    'Acid / PWM',
+    'FM Harmonics',
+    'Vocal Formant',
+    'Metallic Chaos'
+  ];
+
+  names.forEach(name => {
+    const frames = [];
+    for (let f = 0; f < WT_FRAMES; f++) {
+      const t = f / (WT_FRAMES - 1);
+      const buf = new Float32Array(WT_SIZE);
+
+      for (let i = 0; i < WT_SIZE; i++) {
+        const ph = i / WT_SIZE;
+        const ang = ph * Math.PI * 2;
+        let s = 0;
+
+        if (name === 'Basic Shapes') {
+          const sine = Math.sin(ang);
+          const tri = 2 * Math.abs(2 * (ph - Math.floor(ph + 0.5))) - 1;
+          const saw = 2 * ph - 1;
+          const sqr = ph < 0.5 ? 1 : -1;
+
+          if (t < 0.333) {
+            const m = t / 0.333;
+            s = sine * (1 - m) + tri * m;
+          } else if (t < 0.666) {
+            const m = (t - 0.333) / 0.333;
+            s = tri * (1 - m) + saw * m;
+          } else {
+            const m = (t - 0.666) / 0.334;
+            s = saw * (1 - m) + sqr * m;
+          }
+        }
+        else if (name === 'Digital Growl') {
+          const carrier = Math.sin(ang);
+          const mod1 = Math.sin(ang * (2 + Math.floor(t * 6)) + Math.sin(ang * 3) * (1 + t * 4));
+          const formant = Math.sin(ang * (4 + t * 14)) * Math.exp(-Math.pow((ph - 0.5) * 3, 2));
+          s = Math.tanh((carrier * 0.8 + mod1 * 0.7 + formant * 0.9) * (1.2 + t * 2.5));
+        }
+        else if (name === 'Acid / PWM') {
+          const pw = 0.06 + t * 0.88;
+          const pulse = ph < pw ? 1 : -1;
+          const saw = 2 * ph - 1;
+          const spike = Math.sin(ang * (3 + t * 10)) * Math.exp(-ph * 4);
+          s = pulse * 0.55 + saw * 0.35 + spike * 0.45;
+        }
+        else if (name === 'FM Harmonics') {
+          const idx1 = t * 5.5;
+          const idx2 = (1 - t) * 3.0 + t * 2.0;
+          const op3 = Math.sin(ang * 4);
+          const op2 = Math.sin(ang * 2 + op3 * idx2);
+          s = Math.sin(ang + op2 * idx1);
+        }
+        else if (name === 'Vocal Formant') {
+          const f1 = 3 + t * 5;
+          const f2 = 12 - t * 6;
+          const f3 = 20 + Math.sin(t * Math.PI) * 8;
+          const env = 0.5 * (1 - Math.cos(ang));
+          s = (
+            Math.sin(ang * f1) * 0.6 +
+            Math.sin(ang * f2) * 0.45 +
+            Math.sin(ang * f3) * 0.25
+          ) * (0.3 + 0.7 * env) + Math.sin(ang) * 0.4;
+        }
+        else if (name === 'Metallic Chaos') {
+          const ratios = [1, 1.414, 2.73, 4.19, 6.83, 9.41];
+          let sum = 0;
+          for (let h = 0; h < ratios.length; h++) {
+            const amp = Math.pow(0.75, h) * (0.4 + 0.6 * Math.sin(t * Math.PI * (h + 1)));
+            sum += Math.sin(ang * ratios[h] + t * h * 2) * amp;
+          }
+          s = Math.sin(sum * (1.5 + t * 3.0));
+        }
+
+        buf[i] = s;
+      }
+      frames.push(normalizeFrame(buf));
+    }
+    WavetableBank[name] = frames;
+  });
+}
+
+buildWavetables();
+
+function sampleWavetable(tableName, wtPos, phase, warpMode, warpAmt, modSignal = 0) {
+  const frames = WavetableBank[tableName] || WavetableBank['Basic Shapes'];
+  const clampedPos = Math.max(0, Math.min(0.9999, wtPos));
+  const scaled = clampedPos * (WT_FRAMES - 1);
+  const f0 = Math.floor(scaled);
+  const f1 = Math.min(WT_FRAMES - 1, f0 + 1);
+  const frac = scaled - f0;
+
+  let p = phase - Math.floor(phase);
+
+  if (warpMode === 'sync' && warpAmt > 0) {
+    const mult = 1 + warpAmt * 5;
+    p = (p * mult) % 1;
+  } else if (warpMode === 'bendPlus' && warpAmt > 0) {
+    const power = 1 + warpAmt * 3;
+    p = Math.pow(p, power);
+  } else if (warpMode === 'bendMinus' && warpAmt > 0) {
+    const power = 1 / (1 + warpAmt * 3);
+    p = Math.pow(p, power);
+  } else if (warpMode === 'pwm' && warpAmt > 0) {
+    const split = 0.5 * (1 - warpAmt * 0.88);
+    if (p < split) p = (p / split) * 0.5;
+    else p = 0.5 + ((p - split) / (1 - split)) * 0.5;
+  } else if (warpMode === 'fmFromB' && warpAmt > 0) {
+    p = (p + modSignal * warpAmt * 0.45) % 1;
+    if (p < 0) p += 1;
+  }
+
+  const idxFloat = p * WT_SIZE;
+  const i0 = Math.floor(idxFloat) & (WT_SIZE - 1);
+  const i1 = (i0 + 1) & (WT_SIZE - 1);
+  const iFrac = idxFloat - Math.floor(idxFloat);
+
+  const frameA = frames[f0];
+  const frameB = frames[f1];
+
+  const s0 = frameA[i0] + (frameA[i1] - frameA[i0]) * iFrac;
+  const s1 = frameB[i0] + (frameB[i1] - frameB[i0]) * iFrac;
+  let out = s0 + (s1 - s0) * frac;
+
+  if (warpMode === 'fold' && warpAmt > 0) {
+    out = Math.sin(out * (1 + warpAmt * 4.5));
+  } else if (warpMode === 'rmFromB' && warpAmt > 0) {
+    out = out * (1 - warpAmt) + (out * modSignal) * warpAmt;
+  }
+
+  return out;
+}
+
+// ----------------------------------------------------------------------------
+// 3. WEB AUDIO POLYPHONIC DSP ENGINE (WITH DC BLOCKER, FORMANT & BITCRUSHER)
+// ----------------------------------------------------------------------------
+class AetheriumDSP {
+  constructor() {
+    this.ctx = null;
+    this.sampleRate = 44100;
+    this.maxVoices = 8;
+    this.voices = [];
+    this.analyser = null;
+    this.masterGainNode = null;
+    this.lastFreq = 261.63;
+
+    // DC Blocker State (1-pole Highpass ~10Hz)
+    this.dcInL = 0; this.dcOutL = 0;
+    this.dcInR = 0; this.dcOutR = 0;
+
+    // Hyper / Chorus Buffers
+    this.chorusDelayL = new Float32Array(4410);
+    this.chorusDelayR = new Float32Array(4410);
+    this.chorusWriteIdx = 0;
+    this.chorusPhase = 0;
+
+    // Stereo Phaser State (4 allpass stages per channel)
+    this.phaserPhase = 0;
+    this.phaserApL = new Float32Array(4);
+    this.phaserApR = new Float32Array(4);
+    this.phaserFbL = 0;
+    this.phaserFbR = 0;
+
+    // Advanced Bitcrusher State
+    this.crushHoldL = 0;
+    this.crushHoldR = 0;
+    this.crushCounter = 0;
+
+    // Ping-Pong Delay Buffers
+    this.delayBufL = new Float32Array(96000);
+    this.delayBufR = new Float32Array(96000);
+    this.delayWriteIdx = 0;
+    this.delayLpL = 0;
+    this.delayLpR = 0;
+
+    // Schroeder Stereo Algorithmic Reverb
+    this.combLengthsL = [1557, 1617, 1491, 1422];
+    this.combLengthsR = [1580, 1640, 1514, 1445];
+    this.combsL = this.combLengthsL.map(len => ({ buf: new Float32Array(len), idx: 0, filter: 0 }));
+    this.combsR = this.combLengthsR.map(len => ({ buf: new Float32Array(len), idx: 0, filter: 0 }));
+    this.apLengthsL = [225, 556];
+    this.apLengthsR = [248, 579];
+    this.apsL = this.apLengthsL.map(len => ({ buf: new Float32Array(len), idx: 0 }));
+    this.apsR = this.apLengthsR.map(len => ({ buf: new Float32Array(len), idx: 0 }));
+
+    // Noise state
+    this.pinkB0 = 0; this.pinkB1 = 0; this.pinkB2 = 0;
+    this.crackleHold = 0;
+    this.noiseLpState = 0;
+
+    // Telemetry
+    this.activeEnvPos = { env1: 0, env2: 0, env3: 0 };
+    this.activeLfoVal = { lfo1: 0, lfo2: 0 };
+    this.modOffsets = {};
+
+    for (let i = 0; i < this.maxVoices; i++) {
+      this.voices.push(this.createEmptyVoice(i));
+    }
+  }
+
+  createEmptyVoice(id) {
+    return {
+      id,
+      active: false,
+      note: -1,
+      velocity: 0,
+      startTime: 0,
+      freq: 440,
+      targetFreq: 440,
+      phasesA: new Float32Array(7),
+      phasesB: new Float32Array(7),
+      subPhase: 0,
+      env1: { stage: 'idle', val: 0, relStart: 0 },
+      env2: { stage: 'idle', val: 0, relStart: 0 },
+      env3: { stage: 'idle', val: 0, relStart: 0 },
+      lfo1Phase: 0, lfo1SH: 0,
+      lfo2Phase: 0, lfo2SH: 0,
+      fltL1: { z1: 0, z2: 0 }, fltL2: { z1: 0, z2: 0 },
+      fltR1: { z1: 0, z2: 0 }, fltR2: { z1: 0, z2: 0 },
+      // Extra formant filter states (F1, F2, F3 parallel bandpass)
+      fmtL1: { z1: 0, z2: 0 }, fmtL2: { z1: 0, z2: 0 }, fmtL3: { z1: 0, z2: 0 },
+      fmtR1: { z1: 0, z2: 0 }, fmtR2: { z1: 0, z2: 0 }, fmtR3: { z1: 0, z2: 0 },
+      combBufL: new Float32Array(2048), combBufR: new Float32Array(2048), combIdx: 0
+    };
+  }
+
+  initAudio() {
+    if (this.ctx) {
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+      return;
+    }
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AudioCtx();
+    this.sampleRate = this.ctx.sampleRate;
+
+    const bufferSize = 1024;
+    this.scriptNode = this.ctx.createScriptProcessor(bufferSize, 0, 2);
+    this.scriptNode.onaudioprocess = (e) => this.processBlock(e);
+
+    this.analyser = this.ctx.createAnalyser();
+    this.analyser.fftSize = 1024;
+    this.analyser.smoothingTimeConstant = 0.82;
+
+    this.masterGainNode = this.ctx.createGain();
+    this.masterGainNode.gain.value = 1.0;
+
+    this.scriptNode.connect(this.masterGainNode);
+    this.masterGainNode.connect(this.analyser);
+    this.analyser.connect(this.ctx.destination);
+  }
+
+  noteOn(note, velocity = 0.85) {
+    this.initAudio();
+    const freq = 440 * Math.pow(2, (note - 69) / 12);
+
+    let voice = this.voices.find(v => v.active && v.note === note);
+    if (!voice) voice = this.voices.find(v => !v.active);
+    if (!voice) {
+      let releasing = this.voices.filter(v => v.env1.stage === 'release');
+      if (releasing.length > 0) {
+        releasing.sort((a, b) => a.env1.val - b.env1.val);
+        voice = releasing[0];
+      } else {
+        this.voices.sort((a, b) => a.startTime - b.startTime);
+        voice = this.voices[0];
+      }
+    }
+
+    voice.active = true;
+    voice.note = note;
+    voice.velocity = velocity;
+    voice.startTime = performance.now();
+    voice.targetFreq = freq;
+    voice.freq = SynthState.master.glide <= 0.001 ? freq : (this.lastFreq || freq);
+    this.lastFreq = freq;
+
+    for (let u = 0; u < 7; u++) {
+      voice.phasesA[u] = (u * 0.1428) % 1;
+      voice.phasesB[u] = (u * 0.1428 + 0.07) % 1;
+    }
+    voice.subPhase = 0;
+
+    ['env1', 'env2', 'env3'].forEach(k => { voice[k].stage = 'attack'; });
+
+    voice.lfo1Phase = SynthState.lfo1.phase;
+    voice.lfo2Phase = SynthState.lfo2.phase;
+    voice.lfo1SH = Math.random() * 2 - 1;
+    voice.lfo2SH = Math.random() * 2 - 1;
+
+    [voice.fltL1, voice.fltL2, voice.fltR1, voice.fltR2,
+     voice.fmtL1, voice.fmtL2, voice.fmtL3, voice.fmtR1, voice.fmtR2, voice.fmtR3].forEach(f => { f.z1 = 0; f.z2 = 0; });
+  }
+
+  noteOff(note) {
+    for (let v of this.voices) {
+      if (v.active && v.note === note && v.env1.stage !== 'release') {
+        ['env1', 'env2', 'env3'].forEach(k => {
+          v[k].stage = 'release';
+          v[k].relStart = v[k].val;
+        });
+      }
+    }
+  }
+
+  panic() {
+    for (let v of this.voices) {
+      v.active = false;
+      v.env1.stage = 'idle';
+      v.env1.val = 0;
+    }
+  }
+
+  stepEnvelope(envObj, params, dt) {
+    if (envObj.stage === 'idle') {
+      envObj.val = 0;
+    } else if (envObj.stage === 'attack') {
+      envObj.val += dt / Math.max(0.0015, params.a);
+      if (envObj.val >= 1.0) { envObj.val = 1.0; envObj.stage = 'decay'; }
+    } else if (envObj.stage === 'decay') {
+      envObj.val -= (envObj.val - params.s) * Math.min(1, (dt / Math.max(0.005, params.d)) * 4.5);
+      if (Math.abs(envObj.val - params.s) < 0.001) { envObj.val = params.s; envObj.stage = 'sustain'; }
+    } else if (envObj.stage === 'sustain') {
+      envObj.val = params.s;
+    } else if (envObj.stage === 'release') {
+      envObj.val -= envObj.val * Math.min(1, (dt / Math.max(0.005, params.r)) * 5.0);
+      if (envObj.val < 0.0005) { envObj.val = 0; envObj.stage = 'idle'; }
+    }
+    return envObj.val;
+  }
+
+  stepLFO(voice, lfoKey, dt) {
+    const cfg = SynthState[lfoKey];
+    let hz = cfg.rate;
+    if (cfg.sync === 'sync') {
+      const divs = [0.25, 0.5, 1, 2, 3, 4, 6, 8, 12, 16];
+      const idx = Math.min(divs.length - 1, Math.floor((cfg.rate / 30) * divs.length));
+      hz = (SynthState.bpm / 60) * divs[idx];
+    }
+
+    const phaseProp = lfoKey + 'Phase';
+    const shProp = lfoKey + 'SH';
+    let p = voice[phaseProp] + hz * dt;
+    if (p >= 1.0) {
+      p -= Math.floor(p);
+      voice[shProp] = Math.random() * 2 - 1;
+    }
+    voice[phaseProp] = p;
+
+    switch (cfg.shape) {
+      case 'sine': return Math.sin(p * Math.PI * 2);
+      case 'triangle': return 1 - 4 * Math.abs(Math.round(p - 0.25) - (p - 0.25));
+      case 'saw': return 2 * p - 1;
+      case 'square': return p < 0.5 ? 1 : -1;
+      case 'sh': return voice[shProp];
+      default: return 0;
+    }
+  }
+
+  processBiquad(input, state, type, cutoff, reso, sr) {
+    const fc = Math.max(20, Math.min(sr * 0.45, cutoff));
+    const Q = 0.6 + Math.pow(reso, 1.8) * 16.0;
+    const w0 = (2 * Math.PI * fc) / sr;
+    const cosW = Math.cos(w0);
+    const sinW = Math.sin(w0);
+    const alpha = sinW / (2 * Q);
+
+    let b0, b1, b2, a0, a1, a2;
+    if (type === 'lp12' || type === 'lp24') {
+      b0 = (1 - cosW) / 2; b1 = 1 - cosW; b2 = (1 - cosW) / 2;
+      a0 = 1 + alpha; a1 = -2 * cosW; a2 = 1 - alpha;
+    } else if (type === 'hp12' || type === 'hp24') {
+      b0 = (1 + cosW) / 2; b1 = -(1 + cosW); b2 = (1 + cosW) / 2;
+      a0 = 1 + alpha; a1 = -2 * cosW; a2 = 1 - alpha;
+    } else if (type === 'bp12' || type === 'bp24') {
+      b0 = alpha; b1 = 0; b2 = -alpha;
+      a0 = 1 + alpha; a1 = -2 * cosW; a2 = 1 - alpha;
+    } else { // notch
+      b0 = 1; b1 = -2 * cosW; b2 = 1;
+      a0 = 1 + alpha; a1 = -2 * cosW; a2 = 1 - alpha;
+    }
+
+    const nb0 = b0 / a0, nb1 = b1 / a0, nb2 = b2 / a0;
+    const na1 = a1 / a0, na2 = a2 / a0;
+
+    const out = nb0 * input + state.z1;
+    state.z1 = nb1 * input - na1 * out + state.z2;
+    state.z2 = nb2 * input - na2 * out;
+    return out;
+  }
+
+  processFormantFilter(inL, inR, v, cutoffNorm, reso, sr) {
+    // Interpolate between Vowels A -> E -> I -> O -> U based on cutoff knob position (0..1)
+    const vowels = [
+      [730, 1090, 2440], // A
+      [530, 1840, 2480], // E
+      [270, 2290, 3010], // I
+      [570, 840,  2410], // O
+      [300, 870,  2240]  // U
+    ];
+    const scaled = Math.max(0, Math.min(3.999, cutoffNorm * 4));
+    const idx0 = Math.floor(scaled);
+    const idx1 = Math.min(4, idx0 + 1);
+    const frac = scaled - idx0;
+
+    const f1 = vowels[idx0][0] + (vowels[idx1][0] - vowels[idx0][0]) * frac;
+    const f2 = vowels[idx0][1] + (vowels[idx1][1] - vowels[idx0][1]) * frac;
+    const f3 = vowels[idx0][2] + (vowels[idx1][2] - vowels[idx0][2]) * frac;
+    const qVal = 0.55 + reso * 0.42;
+
+    const l1 = this.processBiquad(inL, v.fmtL1, 'bp12', f1, qVal, sr) * 1.4;
+    const l2 = this.processBiquad(inL, v.fmtL2, 'bp12', f2, qVal, sr) * 1.1;
+    const l3 = this.processBiquad(inL, v.fmtL3, 'bp12', f3, qVal, sr) * 0.8;
+
+    const r1 = this.processBiquad(inR, v.fmtR1, 'bp12', f1, qVal, sr) * 1.4;
+    const r2 = this.processBiquad(inR, v.fmtR2, 'bp12', f2, qVal, sr) * 1.1;
+    const r3 = this.processBiquad(inR, v.fmtR3, 'bp12', f3, qVal, sr) * 0.8;
+
+    return [(l1 + l2 + l3) * 0.85, (r1 + r2 + r3) * 0.85];
+  }
+
+  processBlock(e) {
+    const outL = e.outputBuffer.getChannelData(0);
+    const outR = e.outputBuffer.getChannelData(1);
+    const len = outL.length;
+    const sr = this.sampleRate;
+    const dt = 1 / sr;
+
+    const liveMods = {};
+    let latestVoice = null;
+
+    for (let i = 0; i < len; i++) {
+      let mixL = 0;
+      let mixR = 0;
+
+      // Global Noise Generator
+      let noiseSample = 0;
+      if (SynthState.noise.on && SynthState.noise.level > 0.001) {
+        const white = Math.random() * 2 - 1;
+        if (SynthState.noise.color === 'white') {
+          noiseSample = white;
+        } else if (SynthState.noise.color === 'pink') {
+          this.pinkB0 = 0.99765 * this.pinkB0 + white * 0.0990460;
+          this.pinkB1 = 0.96300 * this.pinkB1 + white * 0.2965164;
+          this.pinkB2 = 0.57000 * this.pinkB2 + white * 1.0526913;
+          noiseSample = (this.pinkB0 + this.pinkB1 + this.pinkB2 + white * 0.1848) * 0.22;
+        } else {
+          if (Math.random() < 0.015) this.crackleHold = (Math.random() > 0.5 ? 1 : -1) * Math.random();
+          else this.crackleHold *= 0.92;
+          noiseSample = this.crackleHold;
+        }
+        const nCut = Math.min(0.99, (2 * Math.PI * SynthState.noise.cutoff) / sr);
+        this.noiseLpState += nCut * (noiseSample - this.noiseLpState);
+        noiseSample = this.noiseLpState * SynthState.noise.level * 0.4;
+      }
+
+      // Active Polyphonic Voices
+      for (let vIdx = 0; vIdx < this.maxVoices; vIdx++) {
+        const v = this.voices[vIdx];
+        if (!v.active) continue;
+
+        if (SynthState.master.glide > 0.001) {
+          const gCoeff = 1 - Math.exp(-dt / (SynthState.master.glide * 0.25));
+          v.freq += (v.targetFreq - v.freq) * gCoeff;
+        } else {
+          v.freq = v.targetFreq;
+        }
+
+        const e1 = this.stepEnvelope(v.env1, SynthState.env1, dt);
+        const e2 = this.stepEnvelope(v.env2, SynthState.env2, dt);
+        const e3 = this.stepEnvelope(v.env3, SynthState.env3, dt);
+        const l1 = this.stepLFO(v, 'lfo1', dt);
+        const l2 = this.stepLFO(v, 'lfo2', dt);
+
+        if (v.env1.stage === 'idle') {
+          v.active = false;
+          continue;
+        }
+
+        latestVoice = v;
+        if (i === len - 1) {
+          this.activeEnvPos.env1 = e1;
+          this.activeEnvPos.env2 = e2;
+          this.activeEnvPos.env3 = e3;
+          this.activeLfoVal.lfo1 = l1;
+          this.activeLfoVal.lfo2 = l2;
+        }
+
+        const modValues = { env1: e1, env2: e2, env3: e3, lfo1: l1, lfo2: l2, vel: v.velocity };
+
+        let mod_filterCutoff = 0, mod_filterReso = 0, mod_filterDrive = 0;
+        let mod_oscAWt = 0, mod_oscAWarp = 0, mod_oscAPitch = 0, mod_oscALvl = 0;
+        let mod_oscBWt = 0, mod_oscBWarp = 0, mod_oscBPitch = 0, mod_oscBLvl = 0;
+        let mod_globalPitch = 0, mod_distDrive = 0, mod_crushSr = 0;
+
+        for (let m = 0; m < 8; m++) {
+          const slot = SynthState.matrix[m];
+          if (slot.src === 'none' || slot.dst === 'none' || Math.abs(slot.amt) < 0.001) continue;
+          const srcVal = modValues[slot.src] || 0;
+          const delta = srcVal * slot.amt;
+
+          switch (slot.dst) {
+            case 'filter.cutoff': mod_filterCutoff += delta; break;
+            case 'filter.reso':   mod_filterReso += delta; break;
+            case 'filter.drive':  mod_filterDrive += delta; break;
+            case 'oscA.wtPos':    mod_oscAWt += delta; break;
+            case 'oscA.warpAmt':  mod_oscAWarp += delta; break;
+            case 'oscA.pitch':    mod_oscAPitch += delta * 24; break;
+            case 'oscA.level':    mod_oscALvl += delta; break;
+            case 'oscB.wtPos':    mod_oscBWt += delta; break;
+            case 'oscB.warpAmt':  mod_oscBWarp += delta; break;
+            case 'oscB.pitch':    mod_oscBPitch += delta * 24; break;
+            case 'oscB.level':    mod_oscBLvl += delta; break;
+            case 'global.pitch':  mod_globalPitch += delta * 12; break;
+            case 'fx.dist.drive': mod_distDrive += delta; break;
+            case 'fx.crusher.downsample': mod_crushSr += delta * 30; break;
+          }
+          if (i === len - 1) {
+            liveMods[slot.dst] = (liveMods[slot.dst] || 0) + delta;
+          }
+        }
+
+        // OSCILLATOR B
+        let oscBL = 0, oscBR = 0, oscBMono = 0;
+        if (SynthState.oscB.on) {
+          const semiTotalB = SynthState.oscB.octave * 12 + SynthState.oscB.semi + mod_oscBPitch + mod_globalPitch;
+          const freqB = v.freq * Math.pow(2, semiTotalB / 12);
+          const uniB = SynthState.oscB.unison;
+          const wtPosB = Math.max(0, Math.min(1, SynthState.oscB.wtPos + mod_oscBWt));
+          const warpAmtB = Math.max(0, Math.min(1, SynthState.oscB.warpAmt + mod_oscBWarp));
+          const lvlB = Math.max(0, Math.min(1, SynthState.oscB.level + mod_oscBLvl));
+
+          for (let u = 0; u < uniB; u++) {
+            const spread = uniB === 1 ? 0 : (u / (uniB - 1)) * 2 - 1;
+            const detuneSemi = spread * SynthState.oscB.detune * 0.65;
+            const uFreq = freqB * Math.pow(2, detuneSemi / 12);
+            v.phasesB[u] = (v.phasesB[u] + uFreq * dt) % 1;
+
+            const samp = sampleWavetable(SynthState.oscB.table, wtPosB, v.phasesB[u], SynthState.oscB.warpMode, warpAmtB);
+            oscBMono += samp;
+
+            const pan = Math.max(-1, Math.min(1, SynthState.oscB.pan + spread * 0.75));
+            oscBL += samp * Math.cos((pan + 1) * Math.PI * 0.25);
+            oscBR += samp * Math.sin((pan + 1) * Math.PI * 0.25);
+          }
+          const normB = 1 / Math.sqrt(uniB);
+          oscBMono *= normB;
+          oscBL *= normB * lvlB * 0.55;
+          oscBR *= normB * lvlB * 0.55;
+        }
+
+        // OSCILLATOR A
+        let oscAL = 0, oscAR = 0;
+        if (SynthState.oscA.on) {
+          const semiTotalA = SynthState.oscA.octave * 12 + SynthState.oscA.semi + mod_oscAPitch + mod_globalPitch;
+          const freqA = v.freq * Math.pow(2, semiTotalA / 12);
+          const uniA = SynthState.oscA.unison;
+          const wtPosA = Math.max(0, Math.min(1, SynthState.oscA.wtPos + mod_oscAWt));
+          const warpAmtA = Math.max(0, Math.min(1, SynthState.oscA.warpAmt + mod_oscAWarp));
+          const lvlA = Math.max(0, Math.min(1, SynthState.oscA.level + mod_oscALvl));
+
+          for (let u = 0; u < uniA; u++) {
+            const spread = uniA === 1 ? 0 : (u / (uniA - 1)) * 2 - 1;
+            const detuneSemi = spread * SynthState.oscA.detune * 0.65;
+            const uFreq = freqA * Math.pow(2, detuneSemi / 12);
+            v.phasesA[u] = (v.phasesA[u] + uFreq * dt) % 1;
+
+            const samp = sampleWavetable(SynthState.oscA.table, wtPosA, v.phasesA[u], SynthState.oscA.warpMode, warpAmtA, oscBMono);
+            const pan = Math.max(-1, Math.min(1, SynthState.oscA.pan + spread * 0.75));
+            oscAL += samp * Math.cos((pan + 1) * Math.PI * 0.25);
+            oscAR += samp * Math.sin((pan + 1) * Math.PI * 0.25);
+          }
+          const normA = 1 / Math.sqrt(uniA);
+          oscAL *= normA * lvlA * 0.55;
+          oscAR *= normA * lvlA * 0.55;
+        }
+
+        // SUB OSCILLATOR
+        let subSig = 0;
+        if (SynthState.sub.on && SynthState.sub.level > 0.001) {
+          const subSemi = SynthState.sub.octave * 12 + mod_globalPitch;
+          const subFreq = v.freq * Math.pow(2, subSemi / 12);
+          v.subPhase = (v.subPhase + subFreq * dt) % 1;
+          if (SynthState.sub.shape === 'sine') subSig = Math.sin(v.subPhase * Math.PI * 2);
+          else if (SynthState.sub.shape === 'triangle') subSig = 2 * Math.abs(2 * (v.subPhase - Math.floor(v.subPhase + 0.5))) - 1;
+          else subSig = v.subPhase < 0.5 ? 1 : -1;
+          subSig *= SynthState.sub.level * 0.45;
+        }
+
+        // FILTER ROUTING
+        let toFltL = 0, toFltR = 0, dryFltL = 0, dryFltR = 0;
+        if (SynthState.oscA.toFilter) { toFltL += oscAL; toFltR += oscAR; } else { dryFltL += oscAL; dryFltR += oscAR; }
+        if (SynthState.oscB.toFilter) { toFltL += oscBL; toFltR += oscBR; } else { dryFltL += oscBL; dryFltR += oscBR; }
+        if (SynthState.sub.toFilter)  { toFltL += subSig; toFltR += subSig; } else { dryFltL += subSig; dryFltR += subSig; }
+        if (SynthState.noise.toFilter){ toFltL += noiseSample; toFltR += noiseSample; } else { dryFltL += noiseSample; dryFltR += noiseSample; }
+
+        // MULTIMODE FILTER ENGINE
+        let fltOutL = toFltL, fltOutR = toFltR;
+        if (SynthState.filter.on) {
+          const drive = Math.max(0, Math.min(1, SynthState.filter.drive + mod_filterDrive));
+          const preGain = 1 + drive * 6.0;
+          let inL = Math.tanh(toFltL * preGain);
+          let inR = Math.tanh(toFltR * preGain);
+
+          const baseLog = Math.log(SynthState.filter.cutoff);
+          const minLog = Math.log(20);
+          const maxLog = Math.log(20000);
+          const keyOffset = (v.freq - 261.63) * SynthState.filter.keytrack * 2.5;
+          const modNormLog = Math.max(0, Math.min(1, (baseLog - minLog) / (maxLog - minLog) + mod_filterCutoff));
+          let modCutoff = Math.exp(minLog + modNormLog * (maxLog - minLog)) + keyOffset;
+          modCutoff = Math.max(20, Math.min(19500, modCutoff));
+
+          const reso = Math.max(0, Math.min(1, SynthState.filter.reso + mod_filterReso));
+          const fType = SynthState.filter.type;
+
+          if (fType === 'comb') {
+            const delaySamples = Math.max(4, Math.min(2000, Math.floor(sr / modCutoff)));
+            const readIdx = (v.combIdx - delaySamples + 2048) & 2047;
+            const fb = 0.25 + reso * 0.68;
+            const cL = inL + v.combBufL[readIdx] * fb;
+            const cR = inR + v.combBufR[readIdx] * fb;
+            v.combBufL[v.combIdx] = Math.tanh(cL);
+            v.combBufR[v.combIdx] = Math.tanh(cR);
+            v.combIdx = (v.combIdx + 1) & 2047;
+            fltOutL = cL * 0.65;
+            fltOutR = cR * 0.65;
+          } else if (fType === 'formant') {
+            const [fL, fR] = this.processFormantFilter(inL, inR, v, modNormLog, reso, sr);
+            fltOutL = fL;
+            fltOutR = fR;
+          } else {
+            fltOutL = this.processBiquad(inL, v.fltL1, fType, modCutoff, reso, sr);
+            fltOutR = this.processBiquad(inR, v.fltR1, fType, modCutoff, reso, sr);
+            if (fType === 'lp24' || fType === 'hp24' || fType === 'bp24') {
+              fltOutL = this.processBiquad(fltOutL, v.fltL2, fType, modCutoff, reso * 0.6, sr);
+              fltOutR = this.processBiquad(fltOutR, v.fltR2, fType, modCutoff, reso * 0.6, sr);
+            }
+          }
+
+          if (SynthState.filter.fat > 0.01) {
+            const fatAmt = SynthState.filter.fat * 0.45;
+            fltOutL += Math.sin(v.phasesA[0] * Math.PI * 2) * fatAmt * 0.3;
+            fltOutR += Math.sin(v.phasesA[0] * Math.PI * 2) * fatAmt * 0.3;
+          }
+
+          const fMix = SynthState.filter.mix;
+          fltOutL = toFltL * (1 - fMix) + fltOutL * fMix;
+          fltOutR = toFltR * (1 - fMix) + fltOutR * fMix;
+        }
+
+        const amp = e1 * (0.4 + 0.6 * v.velocity);
+        mixL += (fltOutL + dryFltL) * amp;
+        mixR += (fltOutR + dryFltR) * amp;
+      }
+
+      // ----------------------------------------------------------------------
+      // MASTER FX RACK (1.HYPER -> 2.PHASER -> 3.BITCRUSHER -> 4.DIST -> 5.DELAY -> 6.REVERB)
+      // ----------------------------------------------------------------------
+      let fxL = mixL;
+      let fxR = mixR;
+
+      // 1. HYPER / DIMENSION
+      if (SynthState.fx.hyper.on && SynthState.fx.hyper.mix > 0.001) {
+        this.chorusPhase = (this.chorusPhase + 1.3 * dt) % 1;
+        const lfoC = Math.sin(this.chorusPhase * Math.PI * 2);
+        const depth = 15 + SynthState.fx.hyper.detune * 180;
+        const dL = Math.floor(320 + lfoC * depth);
+        const dR = Math.floor(380 - lfoC * depth);
+
+        this.chorusDelayL[this.chorusWriteIdx] = fxL;
+        this.chorusDelayR[this.chorusWriteIdx] = fxR;
+
+        const rIdxL = (this.chorusWriteIdx - dL + 4410) % 4410;
+        const rIdxR = (this.chorusWriteIdx - dR + 4410) % 4410;
+        this.chorusWriteIdx = (this.chorusWriteIdx + 1) % 4410;
+
+        const wetL = this.chorusDelayR[rIdxR];
+        const wetR = this.chorusDelayL[rIdxL];
+        const m = SynthState.fx.hyper.mix * 0.7;
+        fxL = fxL * (1 - m * 0.4) + wetL * m;
+        fxR = fxR * (1 - m * 0.4) + wetR * m;
+      }
+
+      // 2. STEREO PHASER
+      if (SynthState.fx.phaser.on && SynthState.fx.phaser.mix > 0.001) {
+        this.phaserPhase = (this.phaserPhase + SynthState.fx.phaser.rate * dt) % 1;
+        const modL = 0.5 + 0.45 * Math.sin(this.phaserPhase * Math.PI * 2);
+        const modR = 0.5 + 0.45 * Math.sin((this.phaserPhase + 0.25) * Math.PI * 2);
+        const aL = -0.15 - modL * 0.7;
+        const aR = -0.15 - modR * 0.7;
+
+        let pInL = fxL + this.phaserFbL * SynthState.fx.phaser.fb;
+        let pInR = fxR + this.phaserFbR * SynthState.fx.phaser.fb;
+        for (let st = 0; st < 4; st++) {
+          const outStageL = aL * pInL + this.phaserApL[st];
+          this.phaserApL[st] = pInL - aL * outStageL;
+          pInL = outStageL;
+
+          const outStageR = aR * pInR + this.phaserApR[st];
+          this.phaserApR[st] = pInR - aR * outStageR;
+          pInR = outStageR;
+        }
+        this.phaserFbL = Math.tanh(pInL);
+        this.phaserFbR = Math.tanh(pInR);
+        const pm = SynthState.fx.phaser.mix * 0.65;
+        fxL = fxL * (1 - pm * 0.3) + pInL * pm;
+        fxR = fxR * (1 - pm * 0.3) + pInR * pm;
+      }
+
+      // 3. ADVANCED BITCRUSHER (Bit Depth + Downsample + Clock Jitter)
+      if (SynthState.fx.crusher.on && SynthState.fx.crusher.mix > 0.001) {
+        const srDiv = Math.max(1, Math.round(SynthState.fx.crusher.downsample + (liveMods['fx.crusher.downsample'] || 0) * 30));
+        const jitterAmt = SynthState.fx.crusher.jitter;
+        const effectiveStep = Math.max(1, srDiv + (jitterAmt > 0 ? Math.round((Math.random() - 0.5) * srDiv * jitterAmt * 1.5) : 0));
+
+        this.crushCounter++;
+        if (this.crushCounter >= effectiveStep) {
+          this.crushCounter = 0;
+          const bits = SynthState.fx.crusher.bits;
+          const levels = Math.pow(2, bits - 1);
+          this.crushHoldL = Math.round(Math.max(-1, Math.min(1, fxL)) * levels) / levels;
+          this.crushHoldR = Math.round(Math.max(-1, Math.min(1, fxR)) * levels) / levels;
+        }
+        const cm = SynthState.fx.crusher.mix;
+        fxL = fxL * (1 - cm) + this.crushHoldL * cm;
+        fxR = fxR * (1 - cm) + this.crushHoldR * cm;
+      }
+
+      // 4. ANALOG DISTORTION
+      if (SynthState.fx.dist.on && SynthState.fx.dist.mix > 0.001) {
+        const drv = Math.max(0, Math.min(1, SynthState.fx.dist.drive + (liveMods['fx.dist.drive'] || 0)));
+        const gain = 1 + drv * 18;
+        const mode = SynthState.fx.dist.mode;
+        let dL = fxL * gain;
+        let dR = fxR * gain;
+
+        if (mode === 'tube') {
+          dL = Math.tanh(dL);
+          dR = Math.tanh(dR);
+        } else if (mode === 'hard') {
+          dL = Math.max(-0.85, Math.min(0.85, dL));
+          dR = Math.max(-0.85, Math.min(0.85, dR));
+        } else if (mode === 'diode') {
+          dL = dL > 0 ? Math.tanh(dL * 1.4) : Math.tanh(dL * 0.5) * 0.7;
+          dR = dR > 0 ? Math.tanh(dR * 1.4) : Math.tanh(dR * 0.5) * 0.7;
+        } else if (mode === 'foldback') {
+          dL = Math.sin(dL * 1.8);
+          dR = Math.sin(dR * 1.8);
+        }
+
+        const dm = SynthState.fx.dist.mix;
+        fxL = fxL * (1 - dm) + dL * dm * 0.65;
+        fxR = fxR * (1 - dm) + dR * dm * 0.65;
+      }
+
+      // 5. PING-PONG DELAY
+      if (SynthState.fx.delay.on && SynthState.fx.delay.mix > 0.001) {
+        const dSamples = Math.max(64, Math.min(95000, Math.floor(SynthState.fx.delay.time * sr)));
+        const rIdx = (this.delayWriteIdx - dSamples + 96000) % 96000;
+        const tapL = this.delayBufL[rIdx];
+        const tapR = this.delayBufR[rIdx];
+
+        this.delayLpL += 0.35 * (tapL - this.delayLpL);
+        this.delayLpR += 0.35 * (tapR - this.delayLpR);
+
+        const fb = SynthState.fx.delay.fb;
+        this.delayBufL[this.delayWriteIdx] = fxL + this.delayLpR * fb;
+        this.delayBufR[this.delayWriteIdx] = fxR + this.delayLpL * fb;
+        this.delayWriteIdx = (this.delayWriteIdx + 1) % 96000;
+
+        const dm = SynthState.fx.delay.mix;
+        fxL += tapL * dm;
+        fxR += tapR * dm;
+      }
+
+      // 6. ALGORITHMIC REVERB
+      if (SynthState.fx.reverb.on && SynthState.fx.reverb.mix > 0.001) {
+        const room = 0.72 + SynthState.fx.reverb.size * 0.24;
+        const damp = Math.max(0.05, Math.min(0.95, (SynthState.fx.reverb.damp / 15000)));
+        const revIn = (fxL + fxR) * 0.25;
+
+        let sumL = 0, sumR = 0;
+        for (let c = 0; c < 4; c++) {
+          const cL = this.combsL[c];
+          const outCL = cL.buf[cL.idx];
+          cL.filter += damp * (outCL - cL.filter);
+          cL.buf[cL.idx] = revIn + cL.filter * room;
+          cL.idx = (cL.idx + 1) % cL.buf.length;
+          sumL += outCL;
+
+          const cR = this.combsR[c];
+          const outCR = cR.buf[cR.idx];
+          cR.filter += damp * (outCR - cR.filter);
+          cR.buf[cR.idx] = revIn + cR.filter * room;
+          cR.idx = (cR.idx + 1) % cR.buf.length;
+          sumR += outCR;
+        }
+
+        for (let a = 0; a < 2; a++) {
+          const aL = this.apsL[a];
+          const bufOutL = aL.buf[aL.idx];
+          const newValL = sumL + bufOutL * 0.5;
+          aL.buf[aL.idx] = newValL;
+          sumL = bufOutL - newValL * 0.5;
+          aL.idx = (aL.idx + 1) % aL.buf.length;
+
+          const aR = this.apsR[a];
+          const bufOutR = aR.buf[aR.idx];
+          const newValR = sumR + bufOutR * 0.5;
+          aR.buf[aR.idx] = newValR;
+          sumR = bufOutR - newValR * 0.5;
+          aR.idx = (aR.idx + 1) % aR.buf.length;
+        }
+
+        const rm = SynthState.fx.reverb.mix;
+        fxL = fxL * (1 - rm * 0.3) + sumL * rm;
+        fxR = fxR * (1 - rm * 0.3) + sumR * rm;
+      }
+
+      // Master Gain + DC Blocker (1-Pole Highpass ~10Hz) + Limiter
+      const mGain = SynthState.master.gain;
+      const rawL = fxL * mGain;
+      const rawR = fxR * mGain;
+
+      this.dcOutL = rawL - this.dcInL + 0.996 * this.dcOutL;
+      this.dcInL = rawL;
+      this.dcOutR = rawR - this.dcInR + 0.996 * this.dcOutR;
+      this.dcInR = rawR;
+
+      outL[i] = Math.tanh(this.dcOutL);
+      outR[i] = Math.tanh(this.dcOutR);
+    }
+
+    this.modOffsets = liveMods;
+    if (!latestVoice) {
+      this.activeEnvPos = { env1: 0, env2: 0, env3: 0 };
+    }
+  }
+}
+
+const DSP = new AetheriumDSP();
+
+// ----------------------------------------------------------------------------
+// 4. FACTORY PRESETS (8 COMPLETE PATCHES SHOWCASING NEW FILTERS & CRUSHER)
+// ----------------------------------------------------------------------------
+const PRESETS = [
+  {
+    name: "01 // INIT SAW LEAD",
+    data: {
+      oscA: { on: true, table: 'Basic Shapes', wtPos: 0.66, warpMode: 'none', warpAmt: 0, unison: 3, detune: 0.25, octave: 0, semi: 0, pan: 0, level: 0.85, toFilter: true },
+      oscB: { on: false, table: 'Digital Growl', wtPos: 0.2, warpMode: 'none', warpAmt: 0, unison: 1, detune: 0.2, octave: 0, semi: 0, pan: 0, level: 0, toFilter: true },
+      sub:  { on: true, shape: 'sine', octave: -1, level: 0.35, toFilter: false },
+      noise:{ on: false, color: 'white', cutoff: 5000, level: 0.2, toFilter: true },
+      filter: { on: true, type: 'lp24', cutoff: 4200, reso: 0.2, drive: 0.15, fat: 0.2, keytrack: 0.4, mix: 1 },
+      env1: { a: 0.01, d: 0.5, s: 0.7, r: 0.3 },
+      env2: { a: 0.01, d: 0.35, s: 0.0, r: 0.25 },
+      env3: { a: 0.2, d: 0.8, s: 0.5, r: 0.5 },
+      lfo1: { shape: 'sine', sync: 'hz', rate: 3.5, phase: 0 },
+      lfo2: { shape: 'triangle', sync: 'sync', rate: 4, phase: 0 },
+      matrix: [
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.25 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.35, mix: 0.25 },
+        phaser: { on: false, rate: 0.6, fb: 0.5, mix: 0.4 },
+        crusher: { on: false, bits: 8, downsample: 6, jitter: 0.15, mix: 0.5 },
+        dist: { on: false, mode: 'tube', drive: 0.3, mix: 0.5 },
+        delay: { on: false, time: 0.35, fb: 0.4, mix: 0.25 },
+        reverb: { on: true, size: 0.5, damp: 6000, mix: 0.22 }
+      },
+      master: { glide: 0.0, gain: 0.75 }
+    }
+  },
+  {
+    name: "02 // RAGE LEAD 303",
+    data: {
+      oscA: { on: true, table: 'Acid / PWM', wtPos: 0.35, warpMode: 'sync', warpAmt: 0.28, unison: 5, detune: 0.42, octave: 0, semi: 0, pan: 0, level: 0.9, toFilter: true },
+      oscB: { on: true, table: 'Basic Shapes', wtPos: 0.95, warpMode: 'bendPlus', warpAmt: 0.3, unison: 3, detune: 0.35, octave: -1, semi: 0, pan: 0, level: 0.55, toFilter: true },
+      sub:  { on: true, shape: 'square', octave: -1, level: 0.5, toFilter: true },
+      noise:{ on: true, color: 'white', cutoff: 7500, level: 0.14, toFilter: true },
+      filter: { on: true, type: 'lp24', cutoff: 580, reso: 0.76, drive: 0.65, fat: 0.55, keytrack: 0.5, mix: 1 },
+      env1: { a: 0.005, d: 0.4, s: 0.75, r: 0.22 },
+      env2: { a: 0.005, d: 0.24, s: 0.05, r: 0.2 },
+      env3: { a: 0.05, d: 0.5, s: 0.0, r: 0.2 },
+      lfo1: { shape: 'saw', sync: 'sync', rate: 8, phase: 0 },
+      lfo2: { shape: 'sine', sync: 'hz', rate: 6.5, phase: 0 },
+      matrix: [
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.62 },
+        { src: 'env2', dst: 'oscA.warpAmt', amt: 0.35 },
+        { src: 'lfo1', dst: 'oscA.wtPos', amt: 0.4 },
+        { src: 'vel',  dst: 'filter.cutoff', amt: 0.25 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.45, mix: 0.3 },
+        phaser: { on: false, rate: 0.8, fb: 0.5, mix: 0.35 },
+        crusher: { on: false, bits: 6, downsample: 4, jitter: 0.1, mix: 0.35 },
+        dist: { on: true, mode: 'diode', drive: 0.68, mix: 0.75 },
+        delay: { on: true, time: 0.234, fb: 0.45, mix: 0.28 },
+        reverb: { on: true, size: 0.45, damp: 5000, mix: 0.18 }
+      },
+      master: { glide: 0.08, gain: 0.72 }
+    }
+  },
+  {
+    name: "03 // VOWEL TALK GROWL",
+    data: {
+      oscA: { on: true, table: 'Digital Growl', wtPos: 0.45, warpMode: 'fmFromB', warpAmt: 0.45, unison: 5, detune: 0.55, octave: -1, semi: 0, pan: 0, level: 0.95, toFilter: true },
+      oscB: { on: true, table: 'FM Harmonics', wtPos: 0.55, warpMode: 'fold', warpAmt: 0.48, unison: 3, detune: 0.4, octave: -1, semi: 0, pan: 0, level: 0.75, toFilter: true },
+      sub:  { on: true, shape: 'sine', octave: -2, level: 0.85, toFilter: false },
+      noise:{ on: true, color: 'crackle', cutoff: 3500, level: 0.2, toFilter: true },
+      filter: { on: true, type: 'formant', cutoff: 640, reso: 0.75, drive: 0.75, fat: 0.65, keytrack: 0.2, mix: 0.92 },
+      env1: { a: 0.015, d: 0.6, s: 0.88, r: 0.3 },
+      env2: { a: 0.02, d: 0.45, s: 0.2, r: 0.3 },
+      env3: { a: 0.4, d: 1.2, s: 0.6, r: 0.5 },
+      lfo1: { shape: 'sine', sync: 'sync', rate: 3, phase: 0 },
+      lfo2: { shape: 'triangle', sync: 'hz', rate: 1.2, phase: 0.25 },
+      matrix: [
+        { src: 'lfo1', dst: 'filter.cutoff', amt: 0.55 },
+        { src: 'lfo2', dst: 'oscA.wtPos', amt: 0.45 },
+        { src: 'env2', dst: 'oscA.warpAmt', amt: 0.35 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.5, mix: 0.35 },
+        phaser: { on: true, rate: 0.55, fb: 0.6, mix: 0.45 },
+        crusher: { on: true, bits: 7, downsample: 5, jitter: 0.2, mix: 0.4 },
+        dist: { on: true, mode: 'tube', drive: 0.72, mix: 0.8 },
+        delay: { on: false, time: 0.3, fb: 0.3, mix: 0.1 },
+        reverb: { on: true, size: 0.35, damp: 3500, mix: 0.16 }
+      },
+      master: { glide: 0.1, gain: 0.75 }
+    }
+  },
+  {
+    name: "04 // BITCRUSH GLITCH LEAD",
+    data: {
+      oscA: { on: true, table: 'Metallic Chaos', wtPos: 0.38, warpMode: 'sync', warpAmt: 0.42, unison: 4, detune: 0.38, octave: 0, semi: 0, pan: -0.1, level: 0.9, toFilter: true },
+      oscB: { on: true, table: 'FM Harmonics', wtPos: 0.72, warpMode: 'pwm', warpAmt: 0.5, unison: 4, detune: 0.42, octave: 1, semi: 0, pan: 0.1, level: 0.7, toFilter: true },
+      sub:  { on: true, shape: 'square', octave: -1, level: 0.45, toFilter: true },
+      noise:{ on: true, color: 'crackle', cutoff: 8500, level: 0.25, toFilter: true },
+      filter: { on: true, type: 'bp24', cutoff: 1850, reso: 0.65, drive: 0.6, fat: 0.4, keytrack: 0.55, mix: 0.88 },
+      env1: { a: 0.004, d: 0.38, s: 0.6, r: 0.35 },
+      env2: { a: 0.004, d: 0.28, s: 0.1, r: 0.25 },
+      env3: { a: 0.01, d: 0.2, s: 0.0, r: 0.2 },
+      lfo1: { shape: 'sh', sync: 'sync', rate: 8, phase: 0 },
+      lfo2: { shape: 'saw', sync: 'hz', rate: 4.5, phase: 0 },
+      matrix: [
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.52 },
+        { src: 'lfo1', dst: 'fx.crusher.downsample', amt: 0.65 },
+        { src: 'lfo2', dst: 'oscA.wtPos', amt: 0.48 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.45, mix: 0.35 },
+        phaser: { on: false, rate: 1.2, fb: 0.5, mix: 0.4 },
+        crusher: { on: true, bits: 5, downsample: 12, jitter: 0.45, mix: 0.78 },
+        dist: { on: true, mode: 'foldback', drive: 0.58, mix: 0.65 },
+        delay: { on: true, time: 0.234, fb: 0.52, mix: 0.38 },
+        reverb: { on: true, size: 0.65, damp: 6000, mix: 0.3 }
+      },
+      master: { glide: 0.04, gain: 0.72 }
+    }
+  },
+  {
+    name: "05 // CYBER PLUCK",
+    data: {
+      oscA: { on: true, table: 'FM Harmonics', wtPos: 0.28, warpMode: 'bendMinus', warpAmt: 0.35, unison: 4, detune: 0.28, octave: 0, semi: 0, pan: -0.15, level: 0.85, toFilter: true },
+      oscB: { on: true, table: 'Vocal Formant', wtPos: 0.62, warpMode: 'pwm', warpAmt: 0.4, unison: 4, detune: 0.32, octave: 1, semi: 0, pan: 0.15, level: 0.65, toFilter: true },
+      sub:  { on: true, shape: 'triangle', octave: -1, level: 0.4, toFilter: true },
+      noise:{ on: true, color: 'white', cutoff: 9500, level: 0.18, toFilter: true },
+      filter: { on: true, type: 'lp24', cutoff: 260, reso: 0.42, drive: 0.25, fat: 0.3, keytrack: 0.65, mix: 1 },
+      env1: { a: 0.003, d: 0.42, s: 0.0, r: 0.45 },
+      env2: { a: 0.003, d: 0.26, s: 0.0, r: 0.3 },
+      env3: { a: 0.01, d: 0.15, s: 0.0, r: 0.15 },
+      lfo1: { shape: 'sine', sync: 'hz', rate: 4.5, phase: 0 },
+      lfo2: { shape: 'sh', sync: 'sync', rate: 8, phase: 0 },
+      matrix: [
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.68 },
+        { src: 'env2', dst: 'oscA.wtPos', amt: 0.45 },
+        { src: 'env3', dst: 'oscB.pitch', amt: 0.08 },
+        { src: 'vel',  dst: 'filter.cutoff', amt: 0.3 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.4, mix: 0.35 },
+        phaser: { on: false, rate: 0.5, fb: 0.4, mix: 0.3 },
+        crusher: { on: false, bits: 12, downsample: 2, jitter: 0, mix: 0.2 },
+        dist: { on: false, mode: 'tube', drive: 0.2, mix: 0.3 },
+        delay: { on: true, time: 0.351, fb: 0.52, mix: 0.42 },
+        reverb: { on: true, size: 0.72, damp: 7500, mix: 0.38 }
+      },
+      master: { glide: 0.0, gain: 0.78 }
+    }
+  },
+  {
+    name: "06 // ETHEREAL PHASER PAD",
+    data: {
+      oscA: { on: true, table: 'Vocal Formant', wtPos: 0.22, warpMode: 'bendPlus', warpAmt: 0.25, unison: 7, detune: 0.45, octave: 0, semi: 0, pan: -0.25, level: 0.78, toFilter: true },
+      oscB: { on: true, table: 'Basic Shapes', wtPos: 0.35, warpMode: 'pwm', warpAmt: 0.45, unison: 7, detune: 0.48, octave: 1, semi: 0, pan: 0.25, level: 0.62, toFilter: true },
+      sub:  { on: true, shape: 'sine', octave: -1, level: 0.42, toFilter: false },
+      noise:{ on: true, color: 'pink', cutoff: 2800, level: 0.16, toFilter: true },
+      filter: { on: true, type: 'lp12', cutoff: 1650, reso: 0.32, drive: 0.12, fat: 0.35, keytrack: 0.4, mix: 1 },
+      env1: { a: 0.85, d: 1.8, s: 0.82, r: 1.9 },
+      env2: { a: 1.2,  d: 2.2, s: 0.6,  r: 2.0 },
+      env3: { a: 0.5,  d: 1.5, s: 0.5,  r: 1.5 },
+      lfo1: { shape: 'sine', sync: 'hz', rate: 0.35, phase: 0 },
+      lfo2: { shape: 'triangle', sync: 'hz', rate: 0.22, phase: 0.5 },
+      matrix: [
+        { src: 'lfo1', dst: 'oscA.wtPos', amt: 0.55 },
+        { src: 'lfo2', dst: 'oscB.warpAmt', amt: 0.45 },
+        { src: 'env2', dst: 'filter.cutoff', amt: 0.32 },
+        { src: 'lfo1', dst: 'filter.cutoff', amt: 0.18 },
+        { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }, { src: 'none', dst: 'none', amt: 0 }
+      ],
+      fx: {
+        hyper: { on: true, detune: 0.65, mix: 0.55 },
+        phaser: { on: true, rate: 0.28, fb: 0.65, mix: 0.5 },
+        crusher: { on: false, bits: 12, downsample: 2, jitter: 0, mix: 0.2 },
+        dist: { on: false, mode: 'tube', drive: 0.1, mix: 0.2 },
+        delay: { on: true, time: 0.468, fb: 0.55, mix: 0.38 },
+        reverb: { on: true, size: 0.92, damp: 6800, mix: 0.58 }
+      },
+      master: { glide: 0.0, gain: 0.75 }
+    }
+  }
+];
+
+// ----------------------------------------------------------------------------
+// 5. CUSTOM 3D ROTARY KNOB SYSTEM & INTERACTIVE UI BINDINGS
+// ----------------------------------------------------------------------------
+const KnobRegistry = [];
+const tooltipEl = document.getElementById('tooltip');
+
+function formatValue(val, unit, step) {
+  if (unit === 'Hz') return val >= 1000 ? (val / 1000).toFixed(2) + 'k' : Math.round(val) + 'Hz';
+  if (unit === 's') return val < 1 ? Math.round(val * 1000) + 'ms' : val.toFixed(2) + 's';
+  if (unit === '%') return Math.round(val * 100) + '%';
+  if (unit === 'pan') {
+    if (Math.abs(val) < 0.03) return 'C';
+    return val < 0 ? 'L' + Math.round(Math.abs(val) * 100) : 'R' + Math.round(val * 100);
+  }
+  if (step && step >= 1) {
+    return (val > 0 && (unit === 'oct' || unit === 'st') ? '+' : '') + Math.round(val) + (unit === 'v' || unit === 'bit' || unit === 'x' ? unit : '');
+  }
+  return val.toFixed(2);
+}
+
+function normToVal(norm, min, max, curve, step) {
+  let v = curve === 'exp' ? Math.exp(Math.log(min) + norm * (Math.log(max) - Math.log(min))) : min + norm * (max - min);
+  if (step) v = Math.round(v / step) * step;
+  return Math.max(min, Math.min(max, v));
+}
+
+function valToNorm(val, min, max, curve) {
+  const clamped = Math.max(min, Math.min(max, val));
+  if (curve === 'exp') return (Math.log(clamped) - Math.log(min)) / (Math.log(max) - Math.log(min));
+  return (clamped - min) / (max - min);
+}
+
+function buildKnobElement(container) {
+  const min = parseFloat(container.dataset.min);
+  const max = parseFloat(container.dataset.max);
+  const step = container.dataset.step ? parseFloat(container.dataset.step) : null;
+  const curve = container.dataset.curve || 'lin';
+  const def = parseFloat(container.dataset.default);
+  const label = container.dataset.label || '';
+  const unit = container.dataset.unit || '';
+  const size = container.dataset.size || 'md';
+  const color = container.dataset.color === 'plasma' ? '#ff3b30' : '#00f0ff';
+
+  const r = 18;
+  const circ = 2 * Math.PI * r;
+  const arcLen = circ * 0.75;
+
+  container.innerHTML = `
+    <div class="knob-wrap ${size}">
+      <svg class="knob-ring-svg" viewBox="0 0 44 44">
+        <circle cx="22" cy="22" r="${r}" fill="none" stroke="#0a0c10" stroke-width="3.2"
+          stroke-dasharray="${arcLen} ${circ}" stroke-linecap="round"
+          transform="rotate(135 22 22)"/>
+        <circle class="knob-arc" cx="22" cy="22" r="${r}" fill="none" stroke="${color}" stroke-width="2.8"
+          stroke-dasharray="0 ${circ}" stroke-linecap="round"
+          transform="rotate(135 22 22)" style="filter: drop-shadow(0 0 3px ${color});"/>
+        <circle class="knob-mod-arc" cx="22" cy="22" r="${r + 2.5}" fill="none" stroke="#ffaa00" stroke-width="1.6"
+          stroke-dasharray="0 ${circ}" stroke-linecap="round"
+          transform="rotate(135 22 22)" opacity="0"/>
+      </svg>
+      <div class="knob-cap">
+        <div class="knob-indicator"></div>
+      </div>
+    </div>
+    <div class="knob-label">${label}</div>
+    <div class="knob-val" style="color:${color}"></div>
+  `;
+
+  const wrap = container.querySelector('.knob-wrap');
+  const arc = container.querySelector('.knob-arc');
+  const modArc = container.querySelector('.knob-mod-arc');
+  const ind = container.querySelector('.knob-indicator');
+  const valEl = container.querySelector('.knob-val');
+
+  const knobObj = {
+    container,
+    param: () => container.dataset.param,
+    min: () => parseFloat(container.dataset.min),
+    max: () => parseFloat(container.dataset.max),
+    step: () => container.dataset.step ? parseFloat(container.dataset.step) : null,
+    curve: () => container.dataset.curve || 'lin',
+    def: () => parseFloat(container.dataset.default),
+    unit: () => container.dataset.unit || '',
+    modArc,
+    updateVisual() {
+      const curVal = getParamByPath(this.param());
+      if (curVal === undefined) return;
+      const norm = valToNorm(curVal, this.min(), this.max(), this.curve());
+      const deg = -135 + norm * 270;
+      ind.style.transform = `translateX(-50%) rotate(${deg}deg)`;
+      arc.setAttribute('stroke-dasharray', `${norm * arcLen} ${circ}`);
+      valEl.textContent = formatValue(curVal, this.unit(), this.step());
+    }
+  };
+
+  let dragging = false;
+  let startY = 0;
+  let startNorm = 0;
+
+  wrap.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    dragging = true;
+    startY = e.clientY;
+    const curVal = getParamByPath(knobObj.param());
+    startNorm = valToNorm(curVal, knobObj.min(), knobObj.max(), knobObj.curve());
+    tooltipEl.style.display = 'block';
+    tooltipEl.textContent = formatValue(curVal, knobObj.unit(), knobObj.step());
+    tooltipEl.style.left = (e.clientX + 12) + 'px';
+    tooltipEl.style.top = (e.clientY - 12) + 'px';
+  });
+
+  wrap.addEventListener('dblclick', () => {
+    setParamByPath(knobObj.param(), knobObj.def());
+    knobObj.updateVisual();
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const dy = startY - e.clientY;
+    const sensitivity = e.shiftKey ? 550 : 160;
+    const nextNorm = Math.max(0, Math.min(1, startNorm + dy / sensitivity));
+    const nextVal = normToVal(nextNorm, knobObj.min(), knobObj.max(), knobObj.curve(), knobObj.step());
+    setParamByPath(knobObj.param(), nextVal);
+    knobObj.updateVisual();
+    tooltipEl.textContent = formatValue(nextVal, knobObj.unit(), knobObj.step());
+    tooltipEl.style.left = (e.clientX + 12) + 'px';
+    tooltipEl.style.top = (e.clientY - 12) + 'px';
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (dragging) {
+      dragging = false;
+      tooltipEl.style.display = 'none';
+    }
+  });
+
+  KnobRegistry.push(knobObj);
+  knobObj.updateVisual();
+}
+
+function initAllKnobs() {
+  document.querySelectorAll('.knob-unit').forEach(buildKnobElement);
+}
+
+function refreshAllUI() {
+  KnobRegistry.forEach(k => k.updateVisual());
+
+  document.querySelectorAll('.power-toggle').forEach(el => {
+    const val = getParamByPath(el.dataset.toggle);
+    el.classList.toggle('on', !!val);
+  });
+
+  document.querySelectorAll('.route-btn[data-route]').forEach(el => {
+    const val = getParamByPath(el.dataset.route);
+    el.classList.toggle('active', !!val);
+  });
+
+  document.querySelectorAll('.pill-group[data-pills]').forEach(grp => {
+    const cur = String(getParamByPath(grp.dataset.pills));
+    grp.querySelectorAll('.pill-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.val === cur);
+    });
+  });
+
+  document.getElementById('oscA_table').value = SynthState.oscA.table;
+  document.getElementById('oscA_warpMode').value = SynthState.oscA.warpMode;
+  document.getElementById('oscB_table').value = SynthState.oscB.table;
+  document.getElementById('oscB_warpMode').value = SynthState.oscB.warpMode;
+  document.getElementById('filter_type').value = SynthState.filter.type;
+  document.getElementById('fx_dist_mode').value = SynthState.fx.dist.mode;
+
+  renderMatrixUI();
+  updateModTabControls();
+}
+
+// ----------------------------------------------------------------------------
+// 6. MODULATION MATRIX, TABS & CONTROLS WIRING
+// ----------------------------------------------------------------------------
+function renderMatrixUI() {
+  const container = document.getElementById('matrixContainer');
+  container.innerHTML = '';
+
+  SynthState.matrix.forEach((slot, idx) => {
+    const row = document.createElement('div');
+    row.className = 'matrix-row';
+
+    const srcOpts = MOD_SOURCES.map(s => `<option value="${s.id}" ${s.id === slot.src ? 'selected' : ''}>${s.name}</option>`).join('');
+    const dstOpts = MOD_DESTINATIONS.map(d => `<option value="${d.id}" ${d.id === slot.dst ? 'selected' : ''}>${d.name}</option>`).join('');
+
+    row.innerHTML = `
+      <div class="matrix-idx">${idx + 1}</div>
+      <select class="matrix-select" data-midx="${idx}" data-mfield="src">${srcOpts}</select>
+      <div class="matrix-arrow">&rarr;</div>
+      <select class="matrix-select" data-midx="${idx}" data-mfield="dst">${dstOpts}</select>
+      <div class="bipolar-wrap">
+        <input type="range" class="bipolar-slider" min="-1" max="1" step="0.01" value="${slot.amt}" data-midx="${idx}">
+        <span class="bipolar-val">${Math.round(slot.amt * 100)}%</span>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+
+  container.querySelectorAll('select.matrix-select').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const i = parseInt(e.target.dataset.midx);
+      const f = e.target.dataset.mfield;
+      SynthState.matrix[i][f] = e.target.value;
+    });
+  });
+
+  container.querySelectorAll('input.bipolar-slider').forEach(rng => {
+    rng.addEventListener('input', (e) => {
+      const i = parseInt(e.target.dataset.midx);
+      const val = parseFloat(e.target.value);
+      SynthState.matrix[i].amt = val;
+      e.target.nextElementSibling.textContent = Math.round(val * 100) + '%';
+    });
+  });
+}
+
+function updateModTabControls() {
+  const tab = SynthState.activeModTab;
+  if (tab.startsWith('env')) {
+    document.getElementById('envKnobA').dataset.param = `${tab}.a`;
+    document.getElementById('envKnobD').dataset.param = `${tab}.d`;
+    document.getElementById('envKnobS').dataset.param = `${tab}.s`;
+    document.getElementById('envKnobR').dataset.param = `${tab}.r`;
+    KnobRegistry.forEach(k => k.updateVisual());
+  } else {
+    document.getElementById('lfoKnobRate').dataset.param = `${tab}.rate`;
+    document.getElementById('lfoKnobPhase').dataset.param = `${tab}.phase`;
+    const lfoObj = SynthState[tab];
+    document.querySelectorAll('#lfoShapePills .pill-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.lfoshape === lfoObj.shape);
+    });
+    document.querySelectorAll('#lfoSyncPills .pill-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.lfosync === lfoObj.sync);
+    });
+    KnobRegistry.forEach(k => k.updateVisual());
+  }
+}
+
+function setupControls() {
+  // Navigation Tabs
+  document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(`view-${btn.dataset.tab}`).classList.add('active');
+    });
+  });
+
+  // Populate Wavetable Dropdowns
+  const wtNames = Object.keys(WavetableBank);
+  ['oscA_table', 'oscB_table'].forEach(id => {
+    const sel = document.getElementById(id);
+    wtNames.forEach(n => {
+      const opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n;
+      sel.appendChild(opt);
+    });
+  });
+
+  // Populate Presets
+  const presetSel = document.getElementById('presetSelect');
+  PRESETS.forEach((p, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = p.name;
+    presetSel.appendChild(opt);
+  });
+
+  function loadPreset(idx) {
+    const p = PRESETS[idx];
+    if (!p) return;
+    presetSel.value = idx;
+    const copy = JSON.parse(JSON.stringify(p.data));
+    Object.assign(SynthState.oscA, copy.oscA);
+    Object.assign(SynthState.oscB, copy.oscB);
+    Object.assign(SynthState.sub, copy.sub);
+    Object.assign(SynthState.noise, copy.noise);
+    Object.assign(SynthState.filter, copy.filter);
+    Object.assign(SynthState.env1, copy.env1);
+    Object.assign(SynthState.env2, copy.env2);
+    Object.assign(SynthState.env3, copy.env3);
+    Object.assign(SynthState.lfo1, copy.lfo1);
+    Object.assign(SynthState.lfo2, copy.lfo2);
+    SynthState.matrix = copy.matrix;
+    Object.assign(SynthState.fx.hyper, copy.fx.hyper);
+    Object.assign(SynthState.fx.phaser, copy.fx.phaser);
+    Object.assign(SynthState.fx.crusher, copy.fx.crusher);
+    Object.assign(SynthState.fx.dist, copy.fx.dist);
+    Object.assign(SynthState.fx.delay, copy.fx.delay);
+    Object.assign(SynthState.fx.reverb, copy.fx.reverb);
+    Object.assign(SynthState.master, copy.master);
+    refreshAllUI();
+  }
+
+  presetSel.addEventListener('change', (e) => loadPreset(parseInt(e.target.value)));
+  document.getElementById('prevPreset').addEventListener('click', () => {
+    const next = (parseInt(presetSel.value) - 1 + PRESETS.length) % PRESETS.length;
+    loadPreset(next);
+  });
+  document.getElementById('nextPreset').addEventListener('click', () => {
+    const next = (parseInt(presetSel.value) + 1) % PRESETS.length;
+    loadPreset(next);
+  });
+  document.getElementById('initPresetBtn').addEventListener('click', () => loadPreset(0));
+
+  // Power Toggles
+  document.querySelectorAll('.power-toggle').forEach(el => {
+    el.addEventListener('click', () => {
+      const path = el.dataset.toggle;
+      const next = !getParamByPath(path);
+      setParamByPath(path, next);
+      el.classList.toggle('on', next);
+    });
+  });
+
+  // Route Toggles
+  document.querySelectorAll('.route-btn[data-route]').forEach(el => {
+    el.addEventListener('click', () => {
+      const path = el.dataset.route;
+      const next = !getParamByPath(path);
+      setParamByPath(path, next);
+      el.classList.toggle('active', next);
+    });
+  });
+
+  // Pill Groups
+  document.querySelectorAll('.pill-group[data-pills]').forEach(grp => {
+    const path = grp.dataset.pills;
+    grp.querySelectorAll('.pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        let val = btn.dataset.val;
+        if (!isNaN(Number(val))) val = Number(val);
+        setParamByPath(path, val);
+        grp.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  });
+
+  // Dropdown Listeners
+  document.getElementById('oscA_table').addEventListener('change', e => SynthState.oscA.table = e.target.value);
+  document.getElementById('oscA_warpMode').addEventListener('change', e => SynthState.oscA.warpMode = e.target.value);
+  document.getElementById('oscB_table').addEventListener('change', e => SynthState.oscB.table = e.target.value);
+  document.getElementById('oscB_warpMode').addEventListener('change', e => SynthState.oscB.warpMode = e.target.value);
+  document.getElementById('filter_type').addEventListener('change', e => SynthState.filter.type = e.target.value);
+  document.getElementById('fx_dist_mode').addEventListener('change', e => SynthState.fx.dist.mode = e.target.value);
+  document.getElementById('bpmInput').addEventListener('change', e => {
+    SynthState.bpm = Math.max(40, Math.min(240, parseInt(e.target.value) || 128));
+  });
+
+  // Mod Tabs (Envelopes vs LFOs)
+  document.querySelectorAll('.tab-btn[data-modtab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.modtab;
+      if (tab.startsWith('env')) {
+        document.querySelectorAll('.tab-btn[data-modtab^="env"]').forEach(b => b.classList.remove('active'));
+      } else {
+        document.querySelectorAll('.tab-btn[data-modtab^="lfo"]').forEach(b => b.classList.remove('active'));
+      }
+      btn.classList.add('active');
+      SynthState.activeModTab = tab;
+      updateModTabControls();
+    });
+  });
+
+  // LFO Shape & Sync Pills
+  document.querySelectorAll('#lfoShapePills .pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = SynthState.activeModTab.startsWith('lfo') ? SynthState.activeModTab : 'lfo1';
+      SynthState[tab].shape = btn.dataset.lfoshape;
+      SynthState.activeModTab = tab;
+      updateModTabControls();
+    });
+  });
+
+  document.querySelectorAll('#lfoSyncPills .pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = SynthState.activeModTab.startsWith('lfo') ? SynthState.activeModTab : 'lfo1';
+      SynthState[tab].sync = btn.dataset.lfosync;
+      SynthState.activeModTab = tab;
+      updateModTabControls();
+    });
+  });
+
+  // Clear Matrix
+  document.getElementById('clearMatrixBtn').addEventListener('click', () => {
+    SynthState.matrix.forEach(s => { s.src = 'none'; s.dst = 'none'; s.amt = 0; });
+    renderMatrixUI();
+  });
+
+  // Top Scope Mode Toggle
+  document.getElementById('scopeModeBox').addEventListener('click', () => {
+    const modes = ['both', 'scope', 'fft'];
+    SynthState.scopeMode = modes[(modes.indexOf(SynthState.scopeMode) + 1) % modes.length];
+  });
+
+  // Panic
+  document.getElementById('panicBtn').addEventListener('click', () => DSP.panic());
+
+  // Wavetable Canvas Drag Scrub
+  ['canvasOscA', 'canvasOscB'].forEach((cid, i) => {
+    const cvs = document.getElementById(cid);
+    const oscKey = i === 0 ? 'oscA' : 'oscB';
+    let scrub = false;
+    cvs.addEventListener('mousedown', (e) => { scrub = true; updateWtFromMouse(e); });
+    window.addEventListener('mousemove', (e) => { if (scrub) updateWtFromMouse(e); });
+    window.addEventListener('mouseup', () => { scrub = false; });
+
+    function updateWtFromMouse(e) {
+      const rect = cvs.getBoundingClientRect();
+      const norm = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      SynthState[oscKey].wtPos = norm;
+      KnobRegistry.forEach(k => { if (k.param() === `${oscKey}.wtPos`) k.updateVisual(); });
+    }
+  });
+
+  // Envelope Canvas Drag
+  const envCvs = document.getElementById('envCanvas');
+  let envDragPoint = null;
+  envCvs.addEventListener('mousedown', (e) => {
+    const rect = envCvs.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    if (x < 0.3) envDragPoint = 'a';
+    else if (x < 0.68) envDragPoint = 'ds';
+    else envDragPoint = 'r';
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!envDragPoint) return;
+    const tab = SynthState.activeModTab.startsWith('env') ? SynthState.activeModTab : 'env1';
+    const rect = envCvs.getBoundingClientRect();
+    const nx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const ny = Math.max(0, Math.min(1, 1 - (e.clientY - rect.top) / rect.height));
+    const env = SynthState[tab];
+
+    if (envDragPoint === 'a') env.a = normToVal(Math.min(1, nx * 3.3), 0.002, 4, 'exp');
+    else if (envDragPoint === 'ds') { env.d = normToVal(Math.max(0, Math.min(1, (nx - 0.25) * 2.2)), 0.01, 5, 'exp'); env.s = ny; }
+    else if (envDragPoint === 'r') env.r = normToVal(Math.max(0, Math.min(1, (nx - 0.65) * 2.8)), 0.01, 6, 'exp');
+    KnobRegistry.forEach(k => k.updateVisual());
+  });
+  window.addEventListener('mouseup', () => { envDragPoint = null; });
+
+  loadPreset(1); // Start on Rage Lead 303
+}
+
+// ----------------------------------------------------------------------------
+// 7. HIGH-FPS CANVAS RENDERERS
+// ----------------------------------------------------------------------------
+function drawWavetableDisplay(canvasId, oscKey) {
+  const cvs = document.getElementById(canvasId);
+  if (!cvs) return;
+  const ctx = cvs.getContext('2d');
+  const w = cvs.width, h = cvs.height;
+  const osc = SynthState[oscKey];
+
+  ctx.fillStyle = '#07090c';
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = 'rgba(0, 240, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+  ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h);
+  ctx.stroke();
+
+  const modWt = DSP.modOffsets[`${oscKey}.wtPos`] || 0;
+  const modWarp = DSP.modOffsets[`${oscKey}.warpAmt`] || 0;
+  const curPos = Math.max(0, Math.min(1, osc.wtPos + modWt));
+  const curWarp = Math.max(0, Math.min(1, osc.warpAmt + modWarp));
+
+  const stackCount = 7;
+  for (let s = stackCount - 1; s >= 0; s--) {
+    const offset = (s - 3) * 0.06;
+    const framePos = Math.max(0, Math.min(1, curPos + offset));
+    const isCenter = (s === 3);
+    const yShift = (s - 3) * 5.0;
+    const xShift = (s - 3) * 2.8;
+
+    ctx.beginPath();
+    ctx.strokeStyle = isCenter
+      ? (osc.on ? '#00f0ff' : '#475569')
+      : `rgba(0, 240, 255, ${0.14 - Math.abs(s - 3) * 0.03})`;
+    ctx.lineWidth = isCenter ? 2.2 : 1;
+
+    if (isCenter && osc.on) {
+      ctx.shadowColor = '#00f0ff';
+      ctx.shadowBlur = 8;
+    } else {
+      ctx.shadowBlur = 0;
+    }
+
+    const steps = 110;
+    for (let i = 0; i <= steps; i++) {
+      const ph = i / steps;
+      const val = sampleWavetable(osc.table, framePos, ph, osc.warpMode, curWarp, Math.sin(ph * Math.PI * 4) * 0.5);
+      const px = 12 + xShift + ph * (w - 24);
+      const py = (h / 2) + yShift - val * (h * 0.32);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = 'rgba(0, 240, 255, 0.75)';
+  ctx.font = 'bold 9px Consolas, monospace';
+  ctx.fillText(`FRM ${Math.round(curPos * 63) + 1}/64`, 6, 12);
+}
+
+function drawEnvelopeDisplay() {
+  const cvs = document.getElementById('envCanvas');
+  if (!cvs) return;
+  const ctx = cvs.getContext('2d');
+  const w = cvs.width, h = cvs.height;
+
+  ctx.fillStyle = '#07090c';
+  ctx.fillRect(0, 0, w, h);
+
+  const tab = SynthState.activeModTab.startsWith('env') ? SynthState.activeModTab : 'env1';
+  const env = SynthState[tab];
+
+  const padX = 14, padY = 12;
+  const usableW = w - padX * 2, usableH = h - padY * 2;
+
+  const aNorm = valToNorm(env.a, 0.002, 4, 'exp');
+  const dNorm = valToNorm(env.d, 0.01, 5, 'exp');
+  const rNorm = valToNorm(env.r, 0.01, 6, 'exp');
+
+  const x0 = padX, y0 = h - padY;
+  const x1 = x0 + 12 + aNorm * (usableW * 0.28), y1 = padY;
+  const x2 = x1 + 14 + dNorm * (usableW * 0.30), y2 = padY + (1 - env.s) * usableH;
+  const x3 = x2 + usableW * 0.16, y3 = y2;
+  const x4 = Math.min(w - padX, x3 + 14 + rNorm * (usableW * 0.26)), y4 = y0;
+
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.lineTo(x1, y1);
+  ctx.quadraticCurveTo(x1 + (x2 - x1) * 0.25, y2, x2, y2);
+  ctx.lineTo(x3, y3);
+  ctx.quadraticCurveTo(x3 + (x4 - x3) * 0.25, y4, x4, y4);
+  ctx.strokeStyle = '#00f0ff';
+  ctx.lineWidth = 2.2;
+  ctx.shadowColor = '#00f0ff';
+  ctx.shadowBlur = 8;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  [[x1, y1], [x2, y2], [x4, y4]].forEach(([px, py]) => {
+    ctx.beginPath();
+    ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#07090c';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+  });
+
+  const liveVal = DSP.activeEnvPos[tab] || 0;
+  if (liveVal > 0.005) {
+    const dotY = y0 - liveVal * usableH;
+    ctx.beginPath();
+    ctx.arc(x1, dotY, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffaa00';
+    ctx.fill();
+  }
+}
+
+function drawLFODisplay() {
+  const cvs = document.getElementById('lfoCanvas');
+  if (!cvs) return;
+  const ctx = cvs.getContext('2d');
+  const w = cvs.width, h = cvs.height;
+
+  ctx.fillStyle = '#07090c';
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = 'rgba(255, 59, 48, 0.12)';
+  ctx.beginPath();
+  ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+  ctx.stroke();
+
+  const tab = SynthState.activeModTab.startsWith('lfo') ? SynthState.activeModTab : 'lfo1';
+  const lfo = SynthState[tab];
+
+  ctx.beginPath();
+  ctx.strokeStyle = '#ff3b30';
+  ctx.lineWidth = 2.2;
+  ctx.shadowColor = '#ff3b30';
+  ctx.shadowBlur = 8;
+
+  const steps = 160;
+  for (let i = 0; i <= steps; i++) {
+    const p = (i / steps + lfo.phase) % 1;
+    let val = 0;
+    if (lfo.shape === 'sine') val = Math.sin(p * Math.PI * 2);
+    else if (lfo.shape === 'triangle') val = 1 - 4 * Math.abs(Math.round(p - 0.25) - (p - 0.25));
+    else if (lfo.shape === 'saw') val = 2 * p - 1;
+    else if (lfo.shape === 'square') val = p < 0.5 ? 1 : -1;
+    else val = Math.sin(Math.floor(p * 8) * 12.9898) > 0 ? 0.7 : -0.7;
+
+    const px = 12 + (i / steps) * (w - 24);
+    const py = (h / 2) - val * (h * 0.36);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  const curVal = DSP.activeLfoVal[tab] || 0;
+  ctx.fillStyle = '#ffaa00';
+  ctx.beginPath();
+  ctx.arc(w - 18, (h / 2) - curVal * (h * 0.36), 4.5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+const topTimeData = new Uint8Array(1024);
+const topFreqData = new Uint8Array(512);
+
+function drawTopVisualizer() {
+  const cvs = document.getElementById('topScopeCanvas');
+  if (!cvs) return;
+  const ctx = cvs.getContext('2d');
+  const w = cvs.width, h = cvs.height;
+
+  ctx.fillStyle = '#07090c';
+  ctx.fillRect(0, 0, w, h);
+
+  if (!DSP.analyser) {
+    ctx.fillStyle = '#475569';
+    ctx.font = '9px Consolas, monospace';
+    ctx.fillText('DSP STANDBY', 42, 23);
+    return;
+  }
+
+  if (SynthState.scopeMode === 'fft' || SynthState.scopeMode === 'both') {
+    DSP.analyser.getByteFrequencyData(topFreqData);
+    const bars = 38;
+    const barW = w / bars;
+    for (let i = 0; i < bars; i++) {
+      const bin = Math.floor(Math.pow(i / bars, 1.7) * 260);
+      const val = topFreqData[bin] / 255;
+      const barH = val * (h - 2);
+      ctx.fillStyle = 'rgba(255, 59, 48, 0.45)';
+      ctx.fillRect(i * barW, h - barH, barW - 1, barH);
+    }
+  }
+
+  if (SynthState.scopeMode === 'scope' || SynthState.scopeMode === 'both') {
+    DSP.analyser.getByteTimeDomainData(topTimeData);
+    ctx.beginPath();
+    ctx.strokeStyle = '#00f0ff';
+    ctx.lineWidth = 1.6;
+
+    let startIdx = 0;
+    for (let i = 1; i < 256; i++) {
+      if (topTimeData[i - 1] < 128 && topTimeData[i] >= 128) {
+        startIdx = i;
+        break;
+      }
+    }
+
+    const slice = 256;
+    for (let i = 0; i < slice; i++) {
+      const v = (topTimeData[startIdx + i] - 128) / 128;
+      const px = (i / (slice - 1)) * w;
+      const py = (h / 2) + v * (h * 0.44);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  }
+}
+
+function updateModulationRingsAndTelemetry() {
+  const r = 20.5;
+  const circ = 2 * Math.PI * r;
+  const arcLen = circ * 0.75;
+
+  KnobRegistry.forEach(k => {
+    const p = k.param();
+    const modDelta = DSP.modOffsets[p];
+    if (modDelta && Math.abs(modDelta) > 0.002) {
+      const curVal = getParamByPath(p);
+      const baseNorm = valToNorm(curVal, k.min(), k.max(), k.curve());
+      const modNorm = Math.max(0, Math.min(1, baseNorm + modDelta));
+      const startNorm = Math.min(baseNorm, modNorm);
+      const spanNorm = Math.abs(modNorm - baseNorm);
+
+      k.modArc.setAttribute('opacity', '1');
+      k.modArc.setAttribute('stroke-dasharray', `${spanNorm * arcLen} ${circ}`);
+      k.modArc.setAttribute('transform', `rotate(${135 + startNorm * 270} 22 22)`);
+    } else {
+      k.modArc.setAttribute('opacity', '0');
+    }
+  });
+
+  const activeCount = DSP.voices.filter(v => v.active).length;
+  document.getElementById('voiceCounter').textContent = `${activeCount}/8`;
+  document.getElementById('voiceLed').classList.toggle('active-cyan', activeCount > 0);
+}
+
+function renderLoop() {
+  drawWavetableDisplay('canvasOscA', 'oscA');
+  drawWavetableDisplay('canvasOscB', 'oscB');
+  drawEnvelopeDisplay();
+  drawLFODisplay();
+  drawTopVisualizer();
+  updateModulationRingsAndTelemetry();
+  requestAnimationFrame(renderLoop);
+}
+
+// ----------------------------------------------------------------------------
+// 8. 3-OCTAVE VIRTUAL KEYBOARD, QWERTY & WEB MIDI SUPPORT
+// ----------------------------------------------------------------------------
+const KeyElements = new Map();
+const ActiveNotes = new Set();
+
+function triggerNoteOn(note, vel = 0.85) {
+  if (ActiveNotes.has(note)) return;
+  ActiveNotes.add(note);
+  DSP.noteOn(note, vel);
+  const el = KeyElements.get(note);
+  if (el) el.classList.add('active');
+}
+
+function triggerNoteOff(note) {
+  if (!ActiveNotes.has(note)) return;
+  ActiveNotes.delete(note);
+  DSP.noteOff(note);
+  const el = KeyElements.get(note);
+  if (el) el.classList.remove('active');
+}
+
+function buildKeyboard() {
+  const dock = document.getElementById('pianoKeys');
+  dock.innerHTML = '';
+  KeyElements.clear();
+
+  const startMidi = (SynthState.baseOctave + 1) * 12;
+  const numOctaves = 3;
+  const totalSemis = numOctaves * 12 + 1;
+  const isBlack = [false, true, false, true, false, false, true, false, true, false, true, false];
+
+  let whiteCount = 0;
+  for (let i = 0; i < totalSemis; i++) {
+    if (!isBlack[i % 12]) whiteCount++;
+  }
+
+  let currentWhite = 0;
+  let mouseDown = false;
+  window.addEventListener('mouseup', () => {
+    if (mouseDown) {
+      mouseDown = false;
+      ActiveNotes.forEach(n => triggerNoteOff(n));
+    }
+  });
+
+  for (let i = 0; i < totalSemis; i++) {
+    const midi = startMidi + i;
+    const semi = i % 12;
+    const oct = Math.floor(midi / 12) - 1;
+    const keyEl = document.createElement('div');
+
+    if (!isBlack[semi]) {
+      keyEl.className = 'key-white';
+      if (semi === 0) keyEl.textContent = `C${oct}`;
+      dock.appendChild(keyEl);
+      currentWhite++;
+    } else {
+      keyEl.className = 'key-black';
+      const leftPercent = ((currentWhite - 0.35) / whiteCount) * 100;
+      keyEl.style.left = leftPercent + '%';
+      dock.appendChild(keyEl);
+    }
+
+    keyEl.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      mouseDown = true;
+      triggerNoteOn(midi, 0.85);
+    });
+    keyEl.addEventListener('mouseenter', () => {
+      if (mouseDown) {
+        ActiveNotes.forEach(n => triggerNoteOff(n));
+        triggerNoteOn(midi, 0.85);
+      }
+    });
+    keyEl.addEventListener('mouseleave', () => {
+      if (mouseDown) triggerNoteOff(midi);
+    });
+
+    KeyElements.set(midi, keyEl);
+  }
+
+  document.getElementById('octaveDisplay').textContent = `C${SynthState.baseOctave}`;
+}
+
+const QWERTY_MAP = {
+  'KeyA': 0,  'KeyW': 1,  'KeyS': 2,  'KeyE': 3,  'KeyD': 4,
+  'KeyF': 5,  'KeyT': 6,  'KeyG': 7,  'KeyY': 8,  'KeyH': 9,
+  'KeyU': 10, 'KeyJ': 11, 'KeyK': 12, 'KeyO': 13, 'KeyL': 14,
+  'KeyP': 15, 'Semicolon': 16
+};
+
+window.addEventListener('keydown', (e) => {
+  if (e.repeat || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+  if (e.code === 'KeyZ') {
+    SynthState.baseOctave = Math.max(1, SynthState.baseOctave - 1);
+    DSP.panic();
+    ActiveNotes.clear();
+    buildKeyboard();
+    return;
+  }
+  if (e.code === 'KeyX') {
+    SynthState.baseOctave = Math.min(5, SynthState.baseOctave + 1);
+    DSP.panic();
+    ActiveNotes.clear();
+    buildKeyboard();
+    return;
+  }
+
+  if (QWERTY_MAP.hasOwnProperty(e.code)) {
+    const startMidi = (SynthState.baseOctave + 1) * 12;
+    triggerNoteOn(startMidi + QWERTY_MAP[e.code], 0.85);
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  if (QWERTY_MAP.hasOwnProperty(e.code)) {
+    const startMidi = (SynthState.baseOctave + 1) * 12;
+    triggerNoteOff(startMidi + QWERTY_MAP[e.code]);
+  }
+});
+
+function initWebMIDI() {
+  if (!navigator.requestMIDIAccess) {
+    document.getElementById('midiStatus').textContent = 'NO MIDI';
+    return;
+  }
+  navigator.requestMIDIAccess().then((midiAccess) => {
+    const updateDevices = () => {
+      const inputs = Array.from(midiAccess.inputs.values());
+      if (inputs.length > 0) {
+        document.getElementById('midiStatus').textContent = `${inputs[0].name.substring(0, 10).toUpperCase()}`;
+        document.getElementById('midiLed').classList.add('active-cyan');
+      } else {
+        document.getElementById('midiStatus').textContent = 'MIDI';
+        document.getElementById('midiLed').classList.remove('active-cyan');
+      }
+      inputs.forEach(input => {
+        input.onmidimessage = (msg) => {
+          const [status, data1, data2] = msg.data;
+          const cmd = status & 0xf0;
+          if (cmd === 0x90 && data2 > 0) {
+            triggerNoteOn(data1, data2 / 127);
+          } else if (cmd === 0x80 || (cmd === 0x90 && data2 === 0)) {
+            triggerNoteOff(data1);
+          }
+        };
+      });
+    };
+    updateDevices();
+    midiAccess.onstatechange = updateDevices;
+  }).catch(() => {
+    document.getElementById('midiStatus').textContent = 'MIDI OFF';
+  });
+}
+
+// ----------------------------------------------------------------------------
+// 9. BOOTSTRAP SYNTHESIZER
+// ----------------------------------------------------------------------------
+window.addEventListener('DOMContentLoaded', () => {
+  initAllKnobs();
+  setupControls();
+  buildKeyboard();
+  initWebMIDI();
+  requestAnimationFrame(renderLoop);
+});
+</script>
+</body>
+</html>
