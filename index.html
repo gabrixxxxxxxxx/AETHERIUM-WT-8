@@ -72,7 +72,7 @@
   }
 
   /* Top Header Bar */
-  .top-bar {
+. top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -80,15 +80,17 @@
     border: 1px solid var(--border-dark);
     box-shadow: inset 0 1px 0 var(--border-light), 0 4px 12px rgba(0,0,0,0.5);
     border-radius: 8px;
-    padding: 6px 11px;
-    height: 58px;
-    gap: 7px;
+    padding: 5px 8px;
+    min-height: 58px;
+    gap: 5px;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
 
   .brand {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-shrink: 0;
   }
 
@@ -128,12 +130,13 @@
   .preset-browser {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     background: var(--bg-screen);
-    padding: 4px 6px;
+    padding: 3px 5px;
     border-radius: 6px;
     border: 1px solid #282e3b;
     box-shadow: inset 0 2px 6px rgba(0,0,0,0.95);
+    flex-shrink: 0;
   }
 
   .preset-btn {
@@ -157,13 +160,14 @@
     background: #0d1015;
     color: var(--cyan);
     border: 1px solid #262c3a;
-    padding: 3px 5px;
+    padding: 2px 4px;
     border-radius: 4px;
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 600;
     outline: none;
     cursor: pointer;
+    max-width: 145px;
   }
 
   select.vst-select:hover, select.vst-select:focus { border-color: var(--cyan); }
@@ -171,14 +175,16 @@
   .status-pill {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     background: #090b0f;
     border: 1px solid #222733;
-    padding: 3px 6px;
+    padding: 2px 5px;
     border-radius: 20px;
     font-family: var(--font-mono);
-    font-size: 9.5px;
+    font-size: 9px;
     color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .led {
@@ -196,7 +202,8 @@
   .top-right-control {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    flex-shrink: 0;
   }
 
   .mini-scope-box {
@@ -206,11 +213,12 @@
     padding: 2px;
     box-shadow: inset 0 2px 6px rgba(0,0,0,0.95);
     cursor: pointer;
+    flex-shrink: 0;
   }
 
   canvas.mini-scope {
-    width: 112px;
-    height: 36px;
+    width: 84px;
+    height: 32px;
     display: block;
     border-radius: 3px;
   }
@@ -384,7 +392,7 @@
     align-items: center;
     justify-content: center;
   }
-  .knob-wrap.sm { width: 34px; height: 34px; }
+  .knob-wrap.sm { width: 30px; height: 30px; }
   .knob-wrap.lg { width: 52px; height: 52px; }
 
   .knob-ring-svg {
