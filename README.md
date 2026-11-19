@@ -7,60 +7,60 @@
 [![FX Rack](https://img.shields.io/badge/FX%20Rack-10%20Units-ffaa00?style=for-the-badge)](#)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-10b981?style=for-the-badge)](#)
 
-**Polyphonic Wavetable Synthesizer** creato da **slitex3K** con l'ausilio di un'Intelligenza Artificiale avanzata. Un sintetizzatore wavetable nativo ad alte prestazioni scritto in puro JavaScript ES6+ e **Web Audio API**, racchiuso in un singolo file `index.html` senza librerie o dipendenze esterne.
+**Polyphonic Wavetable Synthesizer** created by **slitex3K** with the assistance of an advanced Artificial Intelligence. A high-performance native wavetable synthesizer written in pure ES6+ JavaScript and **Web Audio API**, contained within a single `index.html` file with no external libraries or dependencies.
 
-> **Prova subito il WebSynth ufficiale:** <https://aetherium-wt-8.pages.dev>
+> **Try the official WebSynth right now:** <https://aetherium-wt-8.pages.dev>
 
-## Caratteristiche Principali
+## Key Features
 
-* **Motore Wavetable Polifonico:** Fino a **8 voci** con modalità di voicing **POLY**, **MONO** e **LEGATO** (con controllo *Glide* e *Retrigger*).
-* **Oscillatori A & B (64 frame × 1024 campioni):**
-  * Wavetable procedurali: *Basic Shapes*, *Digital Growl*, *Acid / PWM*, *FM Harmonics*, *Vocal Formant* e *Metallic Chaos*.
-  * Modalità **Warp**: *Off*, *Hard Sync*, *Bend +*, *Bend -*, *PWM Squeeze*, *Asym Fold*, *FM (from Osc B)* e *RM (from Osc B)*.
-  * Controlli per *WT Pos*, *Warp*, *Unison* (fino a 7 voci), *Detune*, *Oct*, *Semi*, *Pan*, *Level* e routing verso il filtro (`FLT`).
-* **Sub & Noise Generator:**
-  * **Sub Osc** (*Sine*, *Triangle*, *Square*, *-1 / -2 OCT*, *Level*, routing `FLT`).
-  * **Noise** (*White*, *Pink*, *Crackle*, controllo *Color/Cutoff* e *Level*, routing `FLT`).
-* **Multimode Filter Engine:** Modalità *Lowpass 12/24dB*, *Highpass 12/24dB*, *Bandpass 12/24dB*, *Notch*, *Resonant Comb* e *Vowel Formant (A-E-I-O-U)* con *Cutoff*, *Resonance*, *Pre Drive*, *Fat Boost*, *Keytrack* e *Dry/Wet*.
-* **Modulazione Avanzata:**
-  * **3 Inviluppi (ENV 1–3)** con visualizzazione interattiva e controlli *Attack*, *Decay*, *Sustain*, *Release*.
-  * **2 LFO (LFO 1–2)** con forme *Sine*, *Triangle*, *Saw*, *Square*, *S&H*, sincronizzazione *HZ* o *SYNC* (BPM) e *Phase*.
-  * **Modulation Matrix a 8 slot** con sorgenti (*Env 1–3*, *LFO 1–2*, *Velocity*) e destinazioni bipolari su oscillatori, filtro ed effetti.
-* **Polyphonic Arpeggiator & Chord Memory:**
-  * Arpeggiatore con modalità *Up*, *Down*, *Up / Down*, *Poly Chord Pulse* e *Random Poly*, rate ritmiche (*1/4* fino a *1/32*), *Octaves*, *Gate Len*, *Swing*, *Accent* e *Hold / Latch*.
-  * *Chord Memory* con preset (*Minor 7th*, *Major 9th*, *Dark Trap 5th+Oct*, *Ethereal Sus2/9*, *Diminished Tension*, *Octave Power*), funzione **Learn Chord**, *Strum Delay* e *Vel Humanize*.
-* **Master FX Rack (10 Moduli Seriali):**
+- **Polyphonic Wavetable Engine:** Up to **8 voices** with **POLY**, **MONO**, and **LEGATO** voicing modes (including *Glide* and *Retrigger* controls).
+- **Oscillators A & B (64 frames × 1024 samples):**
+  - Procedural wavetables: *Basic Shapes*, *Digital Growl*, *Acid / PWM*, *FM Harmonics*, *Vocal Formant*, and *Metallic Chaos*.
+  - **Warp** modes: *Off*, *Hard Sync*, *Bend +*, *Bend -*, *PWM Squeeze*, *Asym Fold*, *FM (from Osc B)*, and *RM (from Osc B)*.
+  - Controls for *WT Pos*, *Warp*, *Unison* (up to 7 voices), *Detune*, *Oct*, *Semi*, *Pan*, *Level*, and routing to the filter (`FLT`).
+- **Sub & Noise Generator:**
+  - **Sub Osc** (*Sine*, *Triangle*, *Square*, *-1 / -2 OCT*, *Level*, `FLT` routing).
+  - **Noise** (*White*, *Pink*, *Crackle*, *Color/Cutoff* and *Level* controls, `FLT` routing).
+- **Multimode Filter Engine:** *Lowpass 12/24dB*, *Highpass 12/24dB*, *Bandpass 12/24dB*, *Notch*, *Resonant Comb*, and *Vowel Formant (A-E-I-O-U)* modes with *Cutoff*, *Resonance*, *Pre Drive*, *Fat Boost*, *Keytrack*, and *Dry/Wet*.
+- **Advanced Modulation:**
+  - **3 Envelopes (ENV 1–3)** with interactive visualization and *Attack*, *Decay*, *Sustain*, and *Release* controls.
+  - **2 LFOs (LFO 1–2)** with *Sine*, *Triangle*, *Saw*, *Square*, and *S&H* waveforms, *HZ* or *SYNC* (BPM) synchronization, and *Phase*.
+  - **8-slot Modulation Matrix** with sources (*Env 1–3*, *LFO 1–2*, *Velocity*) and bipolar destinations across oscillators, filter, and effects.
+- **Polyphonic Arpeggiator & Chord Memory:**
+  - Arpeggiator with *Up*, *Down*, *Up / Down*, *Poly Chord Pulse*, and *Random Poly* modes, rhythmic rates (*1/4* up to *1/32*), *Octaves*, *Gate Len*, *Swing*, *Accent*, and *Hold / Latch*.
+  - *Chord Memory* with presets (*Minor 7th*, *Major 9th*, *Dark Trap 5th+Oct*, *Ethereal Sus2/9*, *Diminished Tension*, *Octave Power*), **Learn Chord** function, *Strum Delay*, and *Vel Humanize*.
+- **Master FX Rack (10 Serial Modules):**
   1. *Hyper / Dim*
   2. *Phaser*
   3. *Tape Flanger*
-  4. *Bitcrusher* (con *Bits*, *SR* e *Jitter*)
+  4. *Bitcrusher* (with *Bits*, *SR*, and *Jitter*)
   5. *Distortion* (*Tube Warm*, *Hard Clip*, *Diode Fuzz*, *Wavefold*)
   6. *3-Band EQ* (*Low*, *Mid*, *Air*)
   7. *Widener* (*Width*, *Haas*)
   8. *Oct Shimmer*
   9. *PP Delay*
   10. *Reverb*
-* **Preset & Patch JSON:** **14 preset di fabbrica** integrati, funzione **INIT** e **Export / Import (`EXP` / `IMP`)** in formato `.json`.
-* **Prestazioni, Sicurezza e Personalizzazione:**
-  * **Oversampling (`1x` / `2x` / `4x`)** e modalità **ECO** per ottimizzare la CPU.
-  * **Master Safety Limiter** con indicatore di *Gain Reduction* in tempo reale e tasto **PANIC**.
-  * **8 Temi Visivi** (*Cyber Cyan*, *Crimson Static*, *Acid Volt*, *Solar Amber*, *Ultraviolet*, *Arctic Ice*, *Toxic Mint*, *Gold Luxe*) e visualizzatore *Scope / FFT* reattivo.
+- **Presets & JSON Patches:** **14 built-in factory presets**, **INIT** function, and **Export / Import (`EXP` / `IMP`)** in `.json` format.
+- **Performance, Safety & Customization:**
+  - **Oversampling (`1x` / `2x` / `4x`)** and **ECO** mode to optimize CPU usage.
+  - **Master Safety Limiter** with real-time *Gain Reduction* meter and **PANIC** button.
+  - **8 Visual Themes** (*Cyber Cyan*, *Crimson Static*, *Acid Volt*, *Solar Amber*, *Ultraviolet*, *Arctic Ice*, *Toxic Mint*, *Gold Luxe*) and reactive *Scope / FFT* visualizer.
 
-## Controlli & Suonabilità
+## Controls & Playability
 
-* **Web MIDI:** Collegamento automatico ai dispositivi MIDI disponibili nel browser.
-* **Tastiera QWERTY:**
-  * Note: `[A W S E D F T G Y H U J K O L P]`
-  * Cambio ottava: `[Z]` (giù) / `[X]` (su)
-* **Mouse / Touch:** Tastiera a 3 ottave su schermo, scrubbing diretto sulle forme d'onda dei wavetable e controllo manopole (trascinamento verticale, `Shift` per regolazione fine, doppio clic per il valore di default).
+- **Web MIDI:** Automatic connection to MIDI devices available in the browser.
+- **QWERTY Keyboard:**
+  - Notes: `[A W S E D F T G Y H U J K O L P]`
+  - Octave shift: `[Z]` (down) / `[X]` (up)
+- **Mouse / Touch:** On-screen 3-octave keyboard, direct scrubbing on wavetable waveforms, and knob control (vertical drag, `Shift` for fine adjustment, double-click to reset to default value).
 
-## Avvio Locale
+## Local Startup
 
-Non è richiesto alcun processo di build o installazione di pacchetti:
+No build process or package installation is required:
 
-1. Clona o scarica la repository.
-2. Apri `index.html` in un browser moderno compatibile con la **Web Audio API** (oppure visita direttamente la versione live su <https://aetherium-wt-8.pages.dev>).
+1. Clone or download the repository.
+2. Open `index.html` in a modern browser that supports the **Web Audio API** (or visit the live version directly at <https://aetherium-wt-8.pages.dev>).
 
-## Crediti
+## Credits
 
-* **Autore:** `slitex3K` (sviluppato con l'ausilio di un'Intelligenza Artificiale avanzata).
+- **Author:** `slitex3K` (developed with the assistance of an advanced Artificial Intelligence).
